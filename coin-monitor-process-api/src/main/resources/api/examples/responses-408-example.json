@@ -1,0 +1,6 @@
+{
+  "statusCode": "408",
+  "errorType": "Timeout",
+  "description": "Isn't enought time to process the request",
+  "date": "2020-12-29T19:24:19.277Z"
+}

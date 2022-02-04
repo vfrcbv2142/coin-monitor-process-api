@@ -1,0 +1,6 @@
+{
+  "statusCode": "500",
+  "errorType": "Internal Server Error",
+  "description": "something wrong with API",
+  "date": "2020-12-29T19:24:19.277Z"
+}
