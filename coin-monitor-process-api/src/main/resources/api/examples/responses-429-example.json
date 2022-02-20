@@ -1,6 +1,0 @@
-{
-  "statusCode": "429",
-  "errorType": "Too Many Requests",
-  "description": "You can't do so many requests or your limit exceeded",
-  "date": "2020-12-29T19:24:19.277Z"
-}
