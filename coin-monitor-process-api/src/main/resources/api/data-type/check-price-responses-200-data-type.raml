@@ -5,25 +5,20 @@ properties:
   oldDate: string
   newDate: string
   dateDifference: string
-  data:
-    properties:
-      BTC:
-        properties:
-          supply: integer
-          development_status: string
-          proof_type: string
-          org_structure: string
-          coin-market-cap-api:
-            properties:
-              oldPriceUsd: string
-              newPriceUsd: string
-              priceDifference: string
-              volumeUsd24Hr: string
-              changePercent24Hr: string
-          coin-cap-api:
-            properties:
-              oldPriceUsd: string
-              newPriceUsd: string
-              priceDifference: string
-              volumeUsd24Hr: string
-              changePercent24Hr: string
+  data: 
+    items:
+      properties:
+        name: string
+        symbol: string
+        supply: string
+        developmentStatus: string
+        proofType: string
+        orgStructure: string
+        coin_market_price_oldPriceUsd: string
+        coin_cap_price_oldPriceUsd: string
+        coin_market_price_newPriceUsd: string
+        coin_cap_price_newPriceUsd: string
+        coin_market_price_priceDifference: string
+        coin_cap_price_priceDifference: string
+        coin_market_volume24h: string
+        coin_cap_volume24h: string

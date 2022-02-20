@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="c22f10a5-b7dd-4d6f-91c3-d47755005b21" >
+		<wsc:connection wsdlLocation="http://coin-storage-system-api.us-e2.cloudhub.io/CoinStorageService?wsdl" service="CoinStorageService" port="CoinStorageServiceSOAP" address="http://coin-storage-system-api.us-e2.cloudhub.io/CoinStorageService" >
+			<wsc:web-service-security actor="http://schemas.xmlsoap.org/soap/actor/next" />
+		</wsc:connection>
+	</wsc:config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="34e3f9cb-b221-42da-8997-2b6e08332098" basePath="/api" >
+		<http:request-connection host="coin-paprica-system-api1.us-e2.cloudhub.io" port="80" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="14851a36-0d45-4dbc-b9e1-a58e6e617ace" basePath="/v1" >
+		<http:request-connection host="api.coinpaprika.com" port="80" />
+	</http:request-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="b0f34607-1b48-486f-9c93-8d13d74f248f" >
+		<file:connection workingDir="E:/AnypointStudio/workspace/coin-monitor-process-api/src/main/resources/tempfile" />
+	</file:config>
+	<sub-flow name="update_sub_slow" doc:id="b26dfe17-d675-48e2-b276-510e3c7d5536" >
+		<set-variable value='#[attributes.uriParams."id"]' doc:name="Set Variable" doc:id="8e0ab8ce-f984-47c3-94e5-3fca86cdf285" variableName="id"/>
+		<wsc:consume operation="readCoin" doc:name="Consume" doc:id="f5509784-89b9-4577-b696-97aede9bac96" config-ref="Web_Service_Consumer_Config">
+			<wsc:message >
+				<wsc:body ><![CDATA[#[null]]]></wsc:body>
+				<wsc:headers ><![CDATA[#[%dw 2.0
+output application/xml
+ns ns0 http://training.mulesoft.com/
+  ---
+  "headers": {
+    ns0#readCoinHeader:{
+      documentID: vars.id
+      }
+  }]]]></wsc:headers>
+			</wsc:message>
+		</wsc:consume>
+		<ee:transform doc:name="Transform Message" doc:id="b69fc244-9a3c-4521-ba44-831fc9cf6c39" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+ns ns0 http://training.mulesoft.com/
+
+output application/json
+---
+{
+  date: payload.body.ns0#readCoinResponse.date,
+  data: payload.body.ns0#readCoinResponse.data.*coin map (object, index) -> {
+    name: object.name,
+    symbol: object.symbol,
+    supply: object.supply,
+    'coin_market_price': object.'coin_market_price',
+    'coin_cap_price': object.'coin_cap_price',
+    'coin_market_volume24h': object.'coin_market_volume24h',
+    'coin_cap_volume24h':object.'coin_cap_volume24h'
+  }
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="coin_data" ><![CDATA[%dw 2.0ns ns0 http://training.mulesoft.com/
+
+output application/json
+---
+//(payload.body.ns0#readCoinResponse.response) if (payload.body.ns0#readCoinResponse.response != null)payload.body.ns0#readCoinResponse]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="7e933dba-54d6-41cd-ac55-77245542f965" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="coin_idss" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"coin-ids" : payload.data map (object, index) -> {
+		"coin_id" : lower(object.symbol ++ "-" ++ object.name replace " " with("-") )
+	}
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<foreach doc:name="For Each" doc:id="4b03c5b9-d04a-45b6-86d3-b32f9f69652d" collection='#[vars.coin_idss."coin-ids"]'>
+			<logger level="INFO" doc:name="Logger" doc:id="d7415efa-ea88-495b-afe9-09fb25053f5a" message="#[payload.coin_id]"/>
+			<http:request method="GET" doc:name="Request" doc:id="6551e95c-e3d0-44a9-b658-f90688780116" config-ref="HTTP_Request_configuration" path="/coins/{coin_id}">
+				<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"coin_id" : payload."coin_id"
+}]]]></http:uri-params>
+			</http:request>
+			<logger level="INFO" doc:name="Logger" doc:id="3a6ff2b6-9608-4147-9984-ddb88d0de666" message="#[payload]"/>
+			<ee:transform doc:name="Transform Message" doc:id="8fbba97b-9fd8-4e09-a042-25c2024f4c20" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+
+var res1=if(vars.counter==1) "["++ payload.^raw ++"," else ""
+var res2=if(vars.counter==sizeOf(vars.rootMessage.payload.data)) payload.^raw ++"]" else ""
+var res3=if((vars.counter>1) and (vars.counter<sizeOf(vars.rootMessage.payload.data))) payload.^raw ++"," else ""
+output application/json
+---
+res1 ++ res2 ++ res3]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<ee:transform doc:name="Transform Message" doc:id="4549b3ef-83d2-4d87-9e0b-1b964ae30b5c" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload replace '\n' with ""]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<file:write doc:name="Write" doc:id="8bf239c1-739e-4bab-b75a-da03873afa78" config-ref="File_Config" path='#["temp" ++ vars.counter ++ ".txt"]' mode="APPEND">
+			</file:write>
+		</foreach>
+		<file:read doc:name="Read" doc:id="3967c2ae-2f7f-473c-bb32-3aecd01558d2" config-ref="File_Config" path="temp.txt" target="file"/>
+		<ee:transform doc:name="Transform Message" doc:id="85706a42-0975-4ef6-8a96-d1d38e31e0b2">
+				<ee:message>
+				</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="file" ><![CDATA[%dw 2.0
+output application/json
+---
+vars.file replace '\\\\r\\\\n' with ""]]></ee:set-variable>
+			</ee:variables>
+			</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="031414c4-2784-455a-a64c-2e76de76996b">
+				<ee:message>
+				</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="file" ><![CDATA[%dw 2.0
+output application/json
+---
+vars.file replace '\"' with ""]]></ee:set-variable>
+			</ee:variables>
+			</ee:transform>
+		<ee:transform doc:name="Copy_of_Transform Message" doc:id="6a5a9725-d430-4f93-80f2-f4985a10e48b">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="file"><![CDATA[%dw 2.0
+output application/json
+---
+vars.file replace ':' with "\":\""]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<file:write doc:name="Write" doc:id="693fa90f-172f-4f38-a399-b2eabab9bb6b" config-ref="File_Config" path="file1.txt">
+			<file:content ><![CDATA[#[vars.file]]]></file:content>
+		</file:write>
+		<ee:transform doc:name="Transform Message" doc:id="0bdafba0-a971-40f0-9993-380c8388a28a" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="fileoutput" ><![CDATA[%dw 2.0
+output application/json
+var inputData = "[{\n  \"id\": \"avax-avalanche\",\n  \"name\": \"Avalanche\",\n  \"symbol\": \"AVAX\",\n  \"description\": \"Avalanche is an open-source platform for launching decentralized finance applications and enterprise blockchain deployments in one interoperable, highly scalable ecosystem. Developers who build on Avalanche can easily create powerful, reliable, and secure applications and custom blockchain networks with complex rulesets or build on existing private or public subnets. Avalanche gives you complete control on both the network and application layers–helping you build anything you can imagine.\",\n  \"development_status\": \"Working product\",\n  \"proof_type\": \"Proof of Stake\",\n  \"org_structure\": \"Semi-centralized\"\n},{\n  \"id\": \"busd-binance-usd\",\n  \"name\": \"Binance USD\",\n  \"symbol\": \"BUSD\",\n  \"description\": \"\",\n  \"development_status\": \"Only token\",\n  \"proof_type\": \"Not mineable\",\n  \"org_structure\": \"Centralized\"\n},{\n  \"id\": \"btc-bitcoin\",\n  \"name\": \"Bitcoin\",\n  \"symbol\": \"BTC\",\n  \"description\": \"Bitcoin is a cryptocurrency and worldwide payment system. It is the first decentralized digital currency, as the system works without a central bank or single administrator.\",\n  \"development_status\": \"Working product\",\n  \"proof_type\": \"Proof of Work\",\n  \"org_structure\": \"Decentralized\"\n},{\n  \"id\": \"eth-ethereum\",\n  \"name\": \"Ethereum\",\n  \"symbol\": \"ETH\",\n  \"description\": \"Ethereum is a decentralized platform for applications. Applications build on it can use smart contracts - computer algorithms which execute themselves when data is supplied to the platform. There is no need for any human operators.\",\n  \"development_status\": \"Working product\",\n  \"proof_type\": \"Ethereum consensus (currently proof of work, will be proof of stake later on)\",\n  \"org_structure\": \"Semi-centralized\"\n}"
+---
+typeOf(read(inputData , "application/json"))]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="34322c0f-5835-4988-8c01-87219a1c190d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "Successful"
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[201]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="implementationSub_Flow" doc:id="aa42936e-587e-4415-ab43-577563cf74a1" >
+		<ee:transform doc:name="Transform Message" doc:id="98c8ee6e-891b-47fc-a582-055f314543ae">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload replace '\n' with ""]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+	</sub-flow>
+</mule>

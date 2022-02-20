@@ -3,21 +3,16 @@
 type: object
 properties:
   date: string
-  data:
-    properties:
-      BTC:
-        properties:
-          supply: integer
-          development_status: string
-          proof_type: string
-          org_structure: string
-          coin-market-cap-api:
-            properties:
-              priceUsd: string
-              volumeUsd24Hr: string
-              changePercent24Hr: string
-          coin-cap-api:
-            properties:
-              priceUsd: string
-              volumeUsd24Hr: string
-              changePercent24Hr: string
+  data: 
+    items:
+      properties:
+        name: string
+        symbol: string
+        supply: string
+        developmentStatus: string
+        proofType: string
+        orgStructure: string
+        coin_market_price: string
+        coin_cap_price: string
+        coin_market_volume24h: string
+        coin_cap_volume24h: string
