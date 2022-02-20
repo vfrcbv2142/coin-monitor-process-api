@@ -1,0 +1,23 @@
+httpLc:
+  host: "0.0.0.0"
+  port: "8081"
+httpRc:
+  base_path: "/api"
+  protocol: "HTTP"
+  host: "coin-cap-api-demo.us-e2.cloudhub.io"
+  port: "80"
+httpRc2:
+  base_path: "/api"
+  protocol: "HTTP"
+  host: "coin-market-cap-system-api1.us-e2.cloudhub.io"
+  port: "80"
+email:
+   host: "smtp.gmail.com"
+   port: "587"
+   user: "typicm6663@gmail.com"
+   password: "Karnaval3e"
+consum:
+  wsdl_location: "http://coin-storage-system-api.us-e2.cloudhub.io/CoinStorageService?wsdl"
+  service: "CoinStorageService"
+  port: "CoinStorageServiceSOAP"
+  address: "http://coin-storage-system-api.us-e2.cloudhub.io/CoinStorageService"

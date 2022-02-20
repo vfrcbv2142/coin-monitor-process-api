@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="new-test-suite.xml" />
+	<munit:test name="getCryptos-sortByname-Test" doc:id="3baad66d-076e-4230-aede-4ae9870f7c0a">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock coinMarketRequest" doc:id="34afbb85-5f12-4ac6-b109-eea020ef4d9a" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="71929776-d4b9-4500-89e7-6845cb29e1c8" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/coin-market-example200.json')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value='#[&#10;&#10;    {&#10;&#10;      "statusCode": 200&#10;&#10;    }&#10;&#10;]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock coinCapRequest" doc:id="5b35a040-e1e4-415e-908e-18f98765a857" processor="http:request">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="cd4458ac-8f76-473b-863c-0d16ac79f92b" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+					<munit-tools:then-return>
+						<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/coin-cap-example200.json')]" mediaType="application/json" encoding="UTF-8" />
+						<munit-tools:attributes value='#[&#10;&#10;    {&#10;&#10;      "statusCode": 200&#10;&#10;    }&#10;&#10;]' />
+					</munit-tools:then-return>
+				</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="getCryptos" doc:id="e564413a-22ea-4c4c-852d-d59162ec4246" name="get:\getCryptos:coin-monitor-process-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="d2687f3b-616d-4e19-917d-4e4dacdc66e7" actual="#[typeOf(payload)]" expected="Object"/>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="a750f6b4-26d9-4404-9e39-aab1694683d2" processor="http:request" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="71929776-d4b9-4500-89e7-6845cb29e1c8" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="getCryptos-sortByPrice-Test" doc:id="7c3ed35c-5795-4a3c-a251-b43a0a79df70">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock coinMarketRequest" doc:id="e8a0b8af-6ba5-4fd6-aae7-e7fbfcd7d176" processor="http:request">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="71929776-d4b9-4500-89e7-6845cb29e1c8" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+					<munit-tools:then-return>
+						<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/coin-market-example200.json')]" mediaType="application/json" encoding="UTF-8" />
+						<munit-tools:attributes value='#[&#10;&#10;    {&#10;&#10;      "statusCode": 200&#10;&#10;    }&#10;&#10;]' />
+					</munit-tools:then-return>
+				</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock coinCapRequest" doc:id="2ce9c520-4a7e-407a-bd19-f01a935af2b6" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="cd4458ac-8f76-473b-863c-0d16ac79f92b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/coin-cap-example200.json')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value='#[&#10;&#10;    {&#10;&#10;      "statusCode": 200&#10;&#10;    }&#10;&#10;]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<munit:set-event doc:name="Set queryParams" doc:id="43f6d2f1-a448-4b9d-914f-5cccee3fa5c1" >
+				<munit:attributes value="#[{queryParams:{'sortBy':'price'}}]" />
+			</munit:set-event>
+			<flow-ref doc:name="getCryptos" doc:id="ab13ae9c-abd4-4475-bfa0-4e2a06f29e1f" name="get:\getCryptos:coin-monitor-process-api-config" />
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-equals doc:name="Assert equals" doc:id="dc8ff6f6-1b15-4e85-8ee6-c65606f7f590" actual="#[typeOf(payload)]" expected="Object" />
+				<munit-tools:verify-call doc:name="Verify call" doc:id="3694f17a-a778-4640-a057-a412c109b981" processor="ee:transform" atLeast="1">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="8773c141-2fdc-45c2-be54-ed60a42150f6" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+				</munit-tools:verify-call>
+			</munit:validation>
+		</munit:test>
+	<munit:test name="getCryptos-sortByVolume-Test" doc:id="1812b796-0682-42dd-88e2-557668dcdfd0">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock coinMarketRequest" doc:id="2b7fa08b-34be-46c5-9552-f8bae7686e41" processor="http:request">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="71929776-d4b9-4500-89e7-6845cb29e1c8" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/coin-market-example200.json')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value='#[&#10;&#10;    {&#10;&#10;      "statusCode": 200&#10;&#10;    }&#10;&#10;]' />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+				<munit-tools:mock-when doc:name="Mock coinCapRequest" doc:id="10440428-ea0d-4433-b469-7b377ebb6db1" processor="http:request">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="cd4458ac-8f76-473b-863c-0d16ac79f92b" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+					<munit-tools:then-return>
+						<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/coin-cap-example200.json')]" mediaType="application/json" encoding="UTF-8" />
+						<munit-tools:attributes value='#[&#10;&#10;    {&#10;&#10;      "statusCode": 200&#10;&#10;    }&#10;&#10;]' />
+					</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<munit:set-event doc:name="Set queryParams" doc:id="35449ee8-5c4b-4ee9-a649-69417b04a9bc">
+				<munit:attributes value="#[{queryParams:{'sortBy':'volume'}}]" />
+			</munit:set-event>
+			<flow-ref doc:name="getCryptos" doc:id="c27d18e6-7833-4697-adb2-a1262e272a5b" name="get:\getCryptos:coin-monitor-process-api-config" />
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-equals doc:name="Assert equals" doc:id="ce4f3452-7aec-43c5-bde0-6e98ce496010" actual="#[typeOf(payload)]" expected="Object" />
+				<munit-tools:verify-call doc:name="Verify call" doc:id="f65633db-517c-48bb-af3a-380e92efa0f9" processor="ee:transform" atLeast="1">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="8773c141-2fdc-45c2-be54-ed60a42150f6" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+				</munit-tools:verify-call>
+			</munit:validation>
+		</munit:test>
+	<munit:test name="HTTP:UNAUTHORIZED-test" doc:id="8001ad0b-8563-482b-bb76-546975419281" expectedErrorType="HTTP:UNAUTHORIZED">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock 401" doc:id="502dcc73-7364-4427-980d-a5d3b2a52077" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="449e439b-3406-408b-99c0-9437026e0911" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:UNAUTHORIZED" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<flow-ref doc:name="getCryptos" doc:id="3fbdfee4-8225-4c55-8463-1d12df3b71e0" name="get:\getCryptos:coin-monitor-process-api-config" />
+			</munit:execution>
+		</munit:test>
+	<munit:test name="HTTP:FORBIDDEN-test" doc:id="54870ecd-6c7f-4eae-9725-8da20fb01606" expectedErrorType="HTTP:FORBIDDEN">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock 403" doc:id="a6c5df5b-48a6-49f9-9ec7-45ce041b5a9b" processor="flow-ref">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="449e439b-3406-408b-99c0-9437026e0911" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:FORBIDDEN" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<flow-ref doc:name="getCryptos" doc:id="2a95f445-62fd-44ff-9a0e-7e41bc53f4af" name="get:\getCryptos:coin-monitor-process-api-config" />
+			</munit:execution>
+		</munit:test>
+	<munit:test name="HTTP:TIMEOUT-test" doc:id="e8b3f6ee-ad6d-4412-8636-72493d75b6e5" expectedErrorType="HTTP:TIMEOUT">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock 408" doc:id="90288794-f22e-42ef-a7d6-b8cfca271c5d" processor="flow-ref">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="449e439b-3406-408b-99c0-9437026e0911" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:TIMEOUT" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<flow-ref doc:name="getCryptos" doc:id="ce1b1faa-0faa-4dae-bd6e-ad4bb7c47293" name="get:\getCryptos:coin-monitor-process-api-config" />
+			</munit:execution>
+		</munit:test>
+	<munit:test name="HTTP:TOO_MANY_REQUESTS-test" doc:id="d9caea98-3222-46b1-87db-591693440f7d" expectedErrorType="HTTP:TOO_MANY_REQUESTS">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock 429" doc:id="0e0bc657-fdad-4a7d-a25a-1783f0940b2f" processor="flow-ref">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="449e439b-3406-408b-99c0-9437026e0911" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:TOO_MANY_REQUESTS" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<flow-ref doc:name="getCryptos" doc:id="a71cf6f4-b1c5-4ee6-b8de-83bd1abbe953" name="get:\getCryptos:coin-monitor-process-api-config" />
+			</munit:execution>
+		</munit:test>
+	<munit:test name="HTTP:INTERNAL_SERVER_ERROR-test" doc:id="11a5112e-5d25-48ea-930f-6881a95935c9" expectedErrorType="HTTP:INTERNAL_SERVER_ERROR">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock 500" doc:id="8b1a32ee-e1f0-4f74-bdde-1d22f73a7b94" processor="flow-ref">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="449e439b-3406-408b-99c0-9437026e0911" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:INTERNAL_SERVER_ERROR" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<flow-ref doc:name="getCryptos" doc:id="fe04427a-3dd9-4a89-84ac-e1eab3a1b12d" name="get:\getCryptos:coin-monitor-process-api-config" />
+			</munit:execution>
+		</munit:test>
+	<munit:test name="APIKIT:BAD_REQUEST-test" doc:id="be35ac4f-2f83-40a7-ae06-38c6da84099b" expectedErrorType="APIKIT:BAD_REQUEST">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock 400" doc:id="530e7f9c-4818-4f6b-88d9-c2e1eafe959c" processor="apikit:router">
+					<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="coin-monitor-process-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<flow-ref doc:name="coin-monitor-process-api-main" doc:id="0451c2ce-22e5-435d-9a4e-c2378eb093ab" name="coin-monitor-process-api-main" />
+			</munit:execution>
+		</munit:test>
+	<munit:test name="APIKIT:NOT_FOUND-test" doc:id="da370b12-c1cf-4df2-9a65-3f6a1e84d2b1" expectedErrorType="APIKIT:NOT_FOUND">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock 404" doc:id="8e5bacad-b3e4-4efe-976c-bef2a41f4ee7" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="coin-monitor-process-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<flow-ref doc:name="coin-monitor-process-api-main" doc:id="9808c2fe-3200-48cf-afea-4e899feea7e8" name="coin-monitor-process-api-main" />
+			</munit:execution>
+		</munit:test>
+	<munit:test name="APIKIT:METHOD_NOT_ALLOWED-test" doc:id="62a5b258-60c0-43f4-8f2b-bfc10ecd3ed2" expectedErrorType="APIKIT:METHOD_NOT_ALLOWED">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock 405" doc:id="dda36eef-8659-4d37-ab31-a961ab05a43f" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="coin-monitor-process-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<flow-ref doc:name="coin-monitor-process-api-main" doc:id="d20f14b5-c519-4dc2-b318-fda02943aa0a" name="coin-monitor-process-api-main" />
+			</munit:execution>
+		</munit:test>
+	<munit:test name="APIKIT:NOT_ACCEPTABLE-test" doc:id="9cbd52ce-9564-4a2b-96d3-dbf9bf4844e6" expectedErrorType="APIKIT:NOT_ACCEPTABLE">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock 406" doc:id="dee8d169-dd20-4781-b3cc-5b9884f39960" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="coin-monitor-process-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<flow-ref doc:name="coin-monitor-process-api-main" doc:id="460404b3-0124-489c-929a-f5add238773e" name="coin-monitor-process-api-main" />
+			</munit:execution>
+		</munit:test>
+	<munit:test name="APIKIT:UNSUPPORTED_MEDIA_TYPE-test" doc:id="3f70fbb2-a9c2-4e03-a73e-f06fa3802c47" expectedErrorType="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock 415" doc:id="d247c84d-a7d0-409c-b804-e03ae90dc1e4" processor="apikit:router">
+					<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="coin-monitor-process-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<flow-ref doc:name="coin-monitor-process-api-main" doc:id="973bcd5c-8d69-4c62-a25c-5e15562e7ef6" name="coin-monitor-process-api-main" />
+			</munit:execution>
+		</munit:test>
+	<munit:test name="APIKIT:NOT_IMPLEMENTED-test" doc:id="1cfd24da-197d-43c4-90f5-4702b2d30679" expectedErrorType="APIKIT:NOT_IMPLEMENTED">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock 501" doc:id="302b0bde-ffa7-4f15-81f0-df16701c822c" processor="apikit:router">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="coin-monitor-process-api-config" attributeName="config-ref" />
+					</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<flow-ref doc:name="coin-monitor-process-api-main" doc:id="36a23ca9-ada5-4aa7-b0fa-9f1b041e0169" name="coin-monitor-process-api-main" />
+			</munit:execution>
+		</munit:test>
+	<munit:test name="APIKIT:NOT_FOUND-test-console" doc:id="5f7159c2-e196-4d40-b9d2-86d7b343d2bd" expectedErrorType="APIKIT:NOT_FOUND">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock 404" doc:id="83c9b547-818e-4b14-ab89-74211568ebf4" processor="apikit:console">
+					<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="coin-monitor-process-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<flow-ref doc:name="coin-monitor-process-api-console" doc:id="0566fa70-9521-46ca-9277-4e6247b3063e" name="coin-monitor-process-api-console" />
+			</munit:execution>
+		</munit:test>
+	<munit:test name="HTTP:BAD_REQUEST-test" doc:id="4fe05cd7-3fac-4882-80a8-cfef089cb3d0" expectedErrorType="HTTP:BAD_REQUEST">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock 400" doc:id="c9e16e18-43a3-4127-a6f1-02cbe80da2fa" processor="sub-flow">
+					<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="1545f75e-f2d1-49fa-8cd6-dc662be6843e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:BAD_REQUEST" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<flow-ref doc:name="getCryptos" doc:id="7dadd5a5-75eb-4278-a5bf-e111a6482376" name="get:\getCryptos:coin-monitor-process-api-config" />
+			</munit:execution>
+		</munit:test>
+	<munit:test name="WSC:SOAP_FAULT-test" doc:id="ae218531-3143-4c52-b6a2-0f68841ee8fa" expectedErrorType="WSC:SOAP_FAULT">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock SOAP" doc:id="7df3b20d-b2f1-4ce0-b19c-2efb8b9cb44b" processor="sub-flow">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="1545f75e-f2d1-49fa-8cd6-dc662be6843e" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="WSC:SOAP_FAULT" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<flow-ref doc:name="Copy_of_getCryptos" doc:id="68222f34-ef34-43d8-a5ed-59a010fd6ae0" name="get:\getCryptos:coin-monitor-process-api-config" />
+			</munit:execution>
+		</munit:test>
+
+
+</mule>

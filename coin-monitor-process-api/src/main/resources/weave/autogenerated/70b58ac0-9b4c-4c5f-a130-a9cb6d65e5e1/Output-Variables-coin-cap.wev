@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_70b58ac0_9b4c_4c5f_a130_a9cb6d65e5e1_Output_Variables_coin_cap = Any
+

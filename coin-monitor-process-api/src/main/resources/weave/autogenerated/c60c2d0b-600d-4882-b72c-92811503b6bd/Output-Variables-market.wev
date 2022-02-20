@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_c60c2d0b_600d_4882_b72c_92811503b6bd_Output_Variables_market = Any
+
