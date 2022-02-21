@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<munit:config name="test-suite.xml" />
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="3449af3b-8424-46bc-91f6-270184022f94" basePath="/api" >
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
+	<munit:test name="deleteCryptosSubFlowDocumentDoesn'tExist" doc:id="7f62fd67-f47f-4cd5-a649-bb78f6817a50">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="coin-monitor-process-api-main" />
+			<munit:enable-flow-source value="get:\deleteCryptos\(id):coin-monitor-process-api-config" />
+			<munit:enable-flow-source value="deleteCryptosSubFlow" />
+		</munit:enable-flow-sources>
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Consume CoinStorageService_deleteCoin" doc:id="f46328f9-29f3-4486-bd37-062a501dad4f" processor="wsc:consume" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="cb892eb3-c163-41fb-8857-b4c2c30d7e87" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream(&quot;mocks/deleteCoinConsumeOutputDocumenDoesn'tExist.xml&quot;)]" mediaType="application/xml" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<http:request method="GET" doc:name="Request to coin-process-monitor-api" doc:id="095e96a6-d725-4172-a700-6b725e258e1e" config-ref="HTTP_Request_configuration" path="/deleteCryptos/620e1b127de8cc36ef9559bd"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="not null" doc:id="2c444ab1-69af-4d16-894e-b7106c9ceabc" processor="validation:is-not-null" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c4cb0545-a890-4f7d-b95a-b792490ecf04" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="transform message result" doc:id="f6a86940-fef1-431b-b47a-d7755e4e9704" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="b22dcc9f-b170-4b26-b2fd-aa24f8d590ca" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:assert-equals doc:name="result payload" doc:id="a9f8c312-53c1-4cc2-8cb8-ca71741fa14b" actual="#[payload.result]" expected="#[&quot;document with id='620e1b127de8cc36ef9559bd' doesn't exist&quot;]"/>
+		</munit:validation>
+	
+</munit:test>
+	<munit:test name="deleteCryptosSubFlowDocumentExist" doc:id="6de70e86-d6ca-4e61-b319-e6e68b9eeb90">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="coin-monitor-process-api-main" />
+			<munit:enable-flow-source value="get:\deleteCryptos\(id):coin-monitor-process-api-config" />
+			<munit:enable-flow-source value="deleteCryptosSubFlow" />
+		</munit:enable-flow-sources>
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Consume CoinStorageService_deleteCoin" doc:id="f67f800d-bd81-4d13-b92f-cc88e1e92e2a" processor="wsc:consume">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="5abcc034-d642-41a4-9750-13fa481a6936" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[MunitTools::getResourceAsStream("mocks/deleteCoinConsumeOutputDocumenExist.xml")]' mediaType="application/xml" encoding="UTF-8" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<http:request method="GET" doc:name="Request to coin-process-monitor-api" doc:id="ba051042-9911-4210-a8c6-b2e75052908d" config-ref="HTTP_Request_configuration" path="/deleteCryptos/620e1b127de8cc36ef9559bd"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="not null" doc:id="37a09d12-7331-4f68-b3b4-61a971c53d26" processor="validation:is-not-null" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c4cb0545-a890-4f7d-b95a-b792490ecf04" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="fba252d8-1674-4708-b22f-f20b63f39ea5" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="b22dcc9f-b170-4b26-b2fd-aa24f8d590ca" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:assert-equals doc:name="result payload" doc:id="c28bbaf5-597c-471d-9a30-ddac125e5071" actual="#[payload.result]" expected="#[&quot;document with id='620e1e037de8cc36ef9559be' was deleted&quot;]"/>
+		</munit:validation>
+	
+</munit:test>
+
+
+</mule>
