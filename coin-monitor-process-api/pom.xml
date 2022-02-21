@@ -15,6 +15,7 @@
 
 		<app.runtime>4.4.0-20211227</app.runtime>
 		<mule.maven.plugin.version>3.5.2</mule.maven.plugin.version>
+		<munit.version>2.3.7</munit.version>
 	</properties>
 
 	<build>
@@ -29,14 +30,48 @@
 				<artifactId>mule-maven-plugin</artifactId>
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>com.mulesoft.munit.tools</groupId>
+				<artifactId>munit-maven-plugin</artifactId>
+				<version>${munit.version}</version>
+				<executions>
+					<execution>
+						<id>test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
+							<goal>coverage-report</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
-					<classifier>mule-application</classifier>
+					<coverage>
+						<runCoverage>true</runCoverage>
+						<formats>
+							<format>html</format>
+						</formats>
+					</coverage>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.mulesoft.munit</groupId>
+			<artifactId>munit-runner</artifactId>
+			<version>2.3.7</version>
+			<classifier>mule-plugin</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.munit</groupId>
+			<artifactId>munit-tools</artifactId>
+			<version>2.3.7</version>
+			<classifier>mule-plugin</classifier>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.mule.connectors</groupId>
 			<artifactId>mule-http-connector</artifactId>
@@ -48,6 +83,13 @@
 			<artifactId>mule-sockets-connector</artifactId>
 			<version>1.2.2</version>
 			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>4be84b0c-f129-4bb0-bace-870957ae3fd4</groupId>
+			<artifactId>coin-monitor-process-api</artifactId>
+			<version>1.0.7</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>org.mule.modules</groupId>
@@ -68,11 +110,10 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>4be84b0c-f129-4bb0-bace-870957ae3fd4</groupId>
-			<artifactId>coin-monitor-process-api</artifactId>
-			<version>1.0.7</version>
-			<classifier>raml</classifier>
-			<type>zip</type>
+			<groupId>org.mule.weave</groupId>
+			<artifactId>assertions</artifactId>
+			<version>1.0.2</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
     <http:listener-config name="coin-monitor-process-api-httpListenerConfig">
-        <http:listener-connection host="0.0.0.0" port="8082" />
+        <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
     <apikit:config name="coin-monitor-process-api-config" api="resource::4be84b0c-f129-4bb0-bace-870957ae3fd4:coin-monitor-process-api:1.0.7:raml:zip:coin-monitor-process-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-    <wsc:config name="CoinStorageServiceConsumerConfig" doc:name="Web Service Consumer Config" doc:id="b0e69dae-6cd8-4bd7-aa4a-e895f0213252">
-        <wsc:connection wsdlLocation="http://coin-storage-system-api.us-e2.cloudhub.io/CoinStorageService?wsdl" service="CoinStorageService" port="CoinStorageServiceSOAP" address="http://localhost:8081/CoinStorageService">
+    <wsc:config name="CoinStorageServiceConsumerConfig" doc:name="Web Service Consumer Config" doc:id="678ea207-f31b-4ce6-9901-523de3712129">
+        <wsc:connection wsdlLocation="http://coin-storage-system-api.us-e2.cloudhub.io/CoinStorageService?wsdl" service="CoinStorageService" port="CoinStorageServiceSOAP" address="http://coin-storage-system-api.us-e2.cloudhub.io/CoinStorageService">
             <wsc:custom-transport-configuration>
                 <wsc:default-http-transport-configuration timeout="50000" />
             </wsc:custom-transport-configuration>
             <wsc:web-service-security actor="http://schemas.xmlsoap.org/soap/actor/next" />
         </wsc:connection>
     </wsc:config>
-    <configuration doc:name="Configuration" doc:id="b4faa1ca-c200-4d95-afd9-56571f9bc29f" defaultErrorHandler-ref="globalErrorHandler" />
-    <error-handler name="globalErrorHandler" doc:id="ea846adf-0cfa-40e8-8535-997d37ce7d8f">
-        <on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="37a25fcf-f29e-4787-9619-02f00b22d646" />
+    <configuration doc:name="Configuration" doc:id="e42bae53-19c2-4698-9510-de0ea28c93dc" defaultErrorHandler-ref="globalErrorHandler" />
+    <error-handler name="globalErrorHandler" doc:id="9a6c1630-32b7-4354-be8e-7984ae12ec2b">
+        <on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="dce5d6b1-5012-488a-979e-6e9fc459e080" />
     </error-handler>
 </mule>

@@ -8,9 +8,9 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
-	<sub-flow name="deleteCryptosSubFlow" doc:id="7a740bf1-9bd3-429a-a1f5-8df5fc105a5c" >
-		<validation:is-not-null doc:name="Is not null ID" doc:id="e1db6e14-fc7b-4371-940c-0da7def2b075" value="#[attributes.uriParams.'id']" message="document id is null"/>
-		<wsc:consume operation="deleteCoin" doc:name="CoinStorageService_deleteCoin" doc:id="cb892eb3-c163-41fb-8857-b4c2c30d7e87" config-ref="CoinStorageServiceConsumerConfig">
+	<sub-flow name="deleteCryptosSubFlow" doc:id="7c0f9ac1-8274-4acf-8b25-97241151bf0c" >
+		<validation:is-not-null doc:name="Is not null ID" doc:id="c4cb0545-a890-4f7d-b95a-b792490ecf04" value="#[attributes.uriParams.id]" message="document id is null"/>
+		<wsc:consume operation="deleteCoin" doc:name="CoinStorageService_deleteCoin" doc:id="5abcc034-d642-41a4-9750-13fa481a6936" config-ref="CoinStorageServiceConsumerConfig">
 			<wsc:message >
 				<wsc:body ><![CDATA[#[null]]]></wsc:body>
 				<wsc:headers ><![CDATA[#[%dw 2.0
@@ -24,7 +24,7 @@ ns ns0 http://training.mulesoft.com/
   }]]]></wsc:headers>
 			</wsc:message>
 		</wsc:consume>
-		<ee:transform doc:name="result" doc:id="137fd9c3-2271-4c7d-aa3b-af388c7f1f95" >
+		<ee:transform doc:name="result" doc:id="b22dcc9f-b170-4b26-b2fd-aa24f8d590ca" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
@@ -33,20 +33,8 @@ ns ns0 http://training.mulesoft.com/
 result: payload.body.ns0#deleteCoinResponse.response]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="a8c5773a-d8d2-4994-bcc0-3875567d67d1" message="#[payload]"/>
-		<!-- <ee:transform doc:name="XML tp JSON" doc:id="6acc921f-0b1f-48f6-9296-9d11bd8c5674" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-ns ns0 http://training.mulesoft.com/
-
-output application/json
--&#45;&#45;
-{
-response1: payload.body.ns0#deleteCoinResponse.response default "none1",
-response2: payload.body.response default "none2"
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform> -->
+		<logger level="INFO" doc:name="Logger" doc:id="64b6fcb4-a740-4268-ad11-5e668156ed75" message="#[payload]"/>
 	
 </sub-flow>
+
 </mule>
