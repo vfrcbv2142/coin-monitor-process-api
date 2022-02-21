@@ -13,7 +13,6 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 	<sub-flow name="getCryptos" doc:id="1545f75e-f2d1-49fa-8cd6-dc662be6843e" >
 		<set-variable value="#[attributes.queryParams.'slug']" doc:name="setSlug" doc:id="46be1a7e-2bd8-48e6-9461-3518e400a851" variableName="slug" />
 		<set-variable value="#[attributes.queryParams.'sortBy']" doc:name="set sortBy" doc:id="cebaef73-70fd-446d-b0f9-a92d0c7c10ac" variableName="sortBy"/>
-		<flow-ref doc:name="to getCoinCup" doc:id="449e439b-3406-408b-99c0-9437026e0911" name="getCoinCup"/>
 		<flow-ref doc:name="to getCoinMarket" doc:id="5cf0d0b5-12d2-492e-9165-fc0b313f8163" name="getCoinMarket"/>
 		<choice doc:name="Choice" doc:id="978a94cd-4334-4c12-8df1-7273870beacf" >
 			<when expression="#[vars.sortBy == 'price']">
@@ -30,10 +29,10 @@ var body={
      		("name": object.name)if(object.name==object2.name),
      		("symbol": object.symbol)if(object.name==object2.name),
      		("supply": object.supply as String)if(object.name==object2.name),
-      		("coin_market_price": object.'coin_market_price' ++ "\$")if(object.name==object2.name),
-      		("coin_cap_price": object2.'coin_cap_price' default "" ++ "\$")if(object.name==object2.name),
-      		("coin_market_volume24h":trimString::trimStringOfDigits(object.'coin_market_volume24h',2) ++ "\$")if(object.name==object2.name),
-      		("coin_cap_volume24h": trimString::trimStringOfDigits(object2.'coin_cap_volume24h' default "" ,2) ++ "\$")if(object.name==object2.name)
+      		("coin_market_price": object.'coin_market_price' ++ " \$")if(object.name==object2.name),
+      		("coin_cap_price": object2.'coin_cap_price' default "" ++ " \$")if(object.name==object2.name),
+      		("coin_market_volume24h":trimString::trimStringOfDigits(object.'coin_market_volume24h',2) ++ " \$")if(object.name==object2.name),
+      		("coin_cap_volume24h": trimString::trimStringOfDigits(object2.'coin_cap_volume24h' default "" ,2) ++ " \$")if(object.name==object2.name)
 	}
  	}
 }
@@ -42,7 +41,7 @@ var body={
 {
 "date": now() as String,
 	"data":(flatten(body.data.data1) filter(value,index)->(sizeOf(value)>0)) default []
-	orderBy ($.'coin_market_price' replace "\$" with "") as String as Number
+	orderBy ($.'coin_market_price' replace " \$" with "") as String as Number
 	
 }]]></ee:set-payload>
 					</ee:message>
@@ -62,10 +61,10 @@ var body={
      		("name": object.name)if(object.name==object2.name),
      		("symbol": object.symbol)if(object.name==object2.name),
      		("supply": object.supply as String)if(object.name==object2.name),
-      		("coin_market_price": object.'coin_market_price' ++ "\$")if(object.name==object2.name),
-      		("coin_cap_price": object2.'coin_cap_price' default "" ++ "\$")if(object.name==object2.name),
-      		("coin_market_volume24h":trimString::trimStringOfDigits(object.'coin_market_volume24h',2) ++ "\$")if(object.name==object2.name),
-      		("coin_cap_volume24h": trimString::trimStringOfDigits(object2.'coin_cap_volume24h' default "" ,2) ++ "\$")if(object.name==object2.name)
+      		("coin_market_price": object.'coin_market_price' ++ " \$")if(object.name==object2.name),
+      		("coin_cap_price": object2.'coin_cap_price' default "" ++ " \$")if(object.name==object2.name),
+      		("coin_market_volume24h":trimString::trimStringOfDigits(object.'coin_market_volume24h',2) ++ " \$")if(object.name==object2.name),
+      		("coin_cap_volume24h": trimString::trimStringOfDigits(object2.'coin_cap_volume24h' default "" ,2) ++ " \$")if(object.name==object2.name)
 	}
  	}
 }
@@ -74,7 +73,7 @@ var body={
 {
 "date": now() as String,
 	"data":(flatten(body.data.data1) filter(value,index)->(sizeOf(value)>0)) default []
-	orderBy ($.'coin_market_volume24h' replace "\$" with "") as String as Number
+	orderBy ($.'coin_market_volume24h' replace " \$" with "") as String as Number
 	
 }]]></ee:set-payload>
 					</ee:message>
@@ -93,11 +92,11 @@ var body={
 		"data1" : dat1 map(object2,index2)->{
      		("name": object.name)if(object.name==object2.name),
      		("symbol": object.symbol)if(object.name==object2.name),
-     		//("supply": object.supply as String)if(object.name==object2.name),
-      		("coin_market_price": object.'coin_market_price' ++ "\$")if(object.name==object2.name),
-      		("coin_cap_price": object2.'coin_cap_price' default "" ++ "\$")if(object.name==object2.name),
-      		("coin_market_volume24h":trimString::trimStringOfDigits(object.'coin_market_volume24h',2) ++ "\$")if(object.name==object2.name),
-      		("coin_cap_volume24h": trimString::trimStringOfDigits(object2.'coin_cap_volume24h' default "" ,2) ++ "\$")if(object.name==object2.name)
+     		("supply": object.supply as String)if(object.name==object2.name),
+      		("coin_market_price": object.'coin_market_price' ++ " \$")if(object.name==object2.name),
+      		("coin_cap_price": object2.'coin_cap_price' default "" ++ " \$")if(object.name==object2.name),
+      		("coin_market_volume24h":trimString::trimStringOfDigits(object.'coin_market_volume24h',2) ++ " \$")if(object.name==object2.name),
+      		("coin_cap_volume24h": trimString::trimStringOfDigits(object2.'coin_cap_volume24h' default "" ,2) ++ " \$")if(object.name==object2.name)
 	}
  	}
 }
@@ -139,14 +138,13 @@ ns ns0 http://training.mulesoft.com/
 				<wsc:body><![CDATA[#[vars.payloadXML]]]></wsc:body>
 			</wsc:message>
 		</wsc:consume>
-		<validation:is-not-null doc:name="Is not null" doc:id="ce986d26-33a6-42d6-a047-5c69c99e1d10" value="#[payload]" message="Payload is null"/>
-		<set-variable value="#[ns ns0 http://training.mulesoft.com/&#10;---&#10;payload.headers.createCoinResponseHeader.ns0#createCoinResponseHeader.documentID]" doc:name="Set key" doc:id="e318b6de-9a10-49db-bbad-e63b1b47f618" variableName="key" />
-		<email:send doc:name="Send to Email" doc:id="f13b03b3-a222-4368-8d8a-6ac52c997e99" config-ref="Email_SMTP" fromAddress="typicm6663@gmail.com" subject="Seccuesfull">
+		<set-variable value="#[%dw 2.0&#10;ns ns0 http://training.mulesoft.com/&#10;output text/plain&#10;---&#10;payload.headers.createCoinResponseHeader.ns0#createCoinResponseHeader.documentID]" doc:name="Set key" doc:id="e318b6de-9a10-49db-bbad-e63b1b47f618" variableName="key" />
+		<email:send doc:name="Send to Email" doc:id="f13b03b3-a222-4368-8d8a-6ac52c997e99" config-ref="Email_SMTP" fromAddress="typicm6663@gmail.com" subject="New coin created">
 			<email:to-addresses>
 				<email:to-address value="Typicm@gmail.com" />
 			</email:to-addresses>
 			<email:body contentType="text/plain" encoding="UTF-8">
-				<email:content><![CDATA[#[vars.key]]]></email:content>
+				<email:content><![CDATA[#["Coin with ID: " ++ vars.key as String ++" successfully created"]]]></email:content>
 			</email:body>
 		</email:send>
 		<ee:transform doc:name="HashCode" doc:id="8dc00761-9f09-432d-a329-d87cb668c329">
@@ -177,7 +175,8 @@ payload]]></ee:set-variable>
 output application/json
 ---
 {
-	Message: "Document with ID: "++ (vars.key default "") ++" successfully created"
+	Message: "Document with ID: "++ (vars.key default "") ++" successfully created",
+	pay: vars.payloadXML
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -192,6 +191,7 @@ output application/json
 				</http:request>
 		<set-variable value="#[payload.data pluck (object,index)-&gt;{&#10;			&quot;name&quot;: object.name,&#10;     		&quot;symbol&quot;: object.symbol,&#10;     		&quot;supply&quot;: object.'total_supply',&#10;      		&quot;coin_market_price&quot;: object.quote.USD.price,&#10;      		&quot;coin_market_volume24h&quot;: object.quote.USD.'volume_24h'	&#10;}]" doc:name="payload-coinMarket" doc:id="a2c7baad-6fdd-416c-a867-30ac5c92eca7" variableName="coin-market" />
 		<logger level="INFO" doc:name="Logger" doc:id="13cedef5-2626-4ec6-b618-1d1ed590e088" message='"request CoinMarket is successfully"' />
+		<flow-ref doc:name="getCoinCup" doc:id="2599ef11-e731-4812-ab18-5220431908de" name="getCoinCup" />
 	</sub-flow>
 	<sub-flow name="getCoinCup" doc:id="70b58ac0-9b4c-4c5f-a130-a9cb6d65e5e1" >
 		<http:request method="GET" doc:name="GET coinCup" doc:id="cd4458ac-8f76-473b-863c-0d16ac79f92b" config-ref="HTTP_Request_configuration" path="/assets">
@@ -204,4 +204,77 @@ output application/json
 		<set-variable value='#[payload.data map (object,index)-&gt;{&#10;			"name": object.name,&#10;     		"symbol": object.symbol,&#10;      		"coin_cap_price": object.priceUsd,&#10;      		"coin_cap_volume24h": object.volumeUsd24Hr	&#10;}]' doc:name="payload-coinCap" doc:id="a26efa45-fd42-4469-9b81-aca60d4ae6d3" variableName="coin-cap" />
 		<logger level="INFO" doc:name="Logger" doc:id="273fac5e-504c-43f1-bb3b-1660324f7c11" message='"request CoinCup is successfully"' />
 	</sub-flow>
+	<flow name="readCryptos" doc:id="1599ab17-d4e4-4141-920b-d2ddf6a19fea" >
+		<set-variable value='#[attributes.uriParams.id]' doc:name="Set Variable" doc:id="89534282-e951-4034-846c-22300a3e2354" variableName="setID"/>
+		<wsc:consume doc:name="Consume" doc:id="d7d7bda6-73dd-4738-b79b-83d7ecee0552" config-ref="Web_Service_Consumer_Config" operation="readCoin">
+			<wsc:message >
+				<wsc:body ><![CDATA[#[null]]]></wsc:body>
+				<wsc:headers ><![CDATA[#[%dw 2.0
+output application/xml
+ns ns0 http://training.mulesoft.com/
+  ---
+  "headers": {
+    ns0#readCoinHeader:{
+      documentID: vars.setID
+      }
+  }]]]></wsc:headers>
+			</wsc:message>
+		</wsc:consume>
+		<choice doc:name="Choice" doc:id="205f3196-3f83-48f0-9a7b-49cf927d9193" >
+			<when expression="#[%dw 2.0&#10;ns ns0 http://training.mulesoft.com/&#10;---&#10;payload.body.ns0#readCoinResponse.response == null]">
+				<ee:transform doc:name="Transform Message" doc:id="3d49d47a-3f5f-445f-9f1d-00010ef51508" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+ns ns0 http://training.mulesoft.com/
+output application/json
+---
+{
+  (oldDate: payload.body.ns0#readCoinResponse.oldDate) if (payload.body.ns0#readCoinResponse.oldDate != null),
+  (newDate: payload.body.ns0#readCoinResponse.newDate) if (payload.body.ns0#readCoinResponse.newDate != null),
+  (dateDifference: payload.body.ns0#readCoinResponse.dateDifference) if (payload.body.ns0#readCoinResponse.dateDifference != null),
+  (date: payload.body.ns0#readCoinResponse.date) if (payload.body.ns0#readCoinResponse.date != null),
+  data: payload.body.ns0#readCoinResponse.data.*coin map (object, index) -> {
+    name: object.name,
+    symbol: object.symbol,
+    supply: object.supply,
+    (description: object.description) if (object.description != null),
+    (developmentStatus: object.developmentStatus) if (object.developmentStatus != null),
+    (proofType: object.proofType) if (object.proofType != null),
+    (orgStructure: object.orgStructure) if (object.orgStructure != null),
+    (coin_market_oldPriceUSD: object.'coin_market_oldPriceUSD') if (object.'coin_market_oldPriceUSD' != null),
+    (coin_cap_oldPriceUSD: object.'coin_cap_oldPriceUSD') if (object.'coin_cap_oldPriceUSD' != null),
+    (coin_market_newPriceUSD: object.'coin_market_newPriceUSD') if (object.'coin_market_newPriceUSD' != null),
+    (coin_cap_newPriceUSD: object.'coin_cap_newPriceUSD') if (object.'coin_cap_newPriceUSD' != null),
+    (coin_market_priceDifference: object.'coin_market_priceDifference') if (object.'coin_market_priceDifference' != null),
+    (coin_cap_newPriceUSD: object.'coin_cap_priceDifference') if (object.'coin_cap_priceDifference' != null),
+    (coin_market_price: object.'coin_market_price') if (object.'coin_market_price' != null),
+    (coin_cap_price: object.'coin_cap_price') if (object.'coin_cap_price' != null),
+    coin_market_volume24h: object.'coin_market_volume24h',
+    coin_cap_volume24h: object.'coin_cap_volume24h'
+  }
+}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Document doesn't exist" doc:id="54ed2762-1774-40d7-bf00-4c262ce01b18" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0ns ns0 http://training.mulesoft.com/
+
+output application/json
+---
+{
+	result: payload.body.ns0#readCoinResponse.response
+}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
 </mule>

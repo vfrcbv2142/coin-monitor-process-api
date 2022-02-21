@@ -39,7 +39,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<os:config name="ObjectStore_Config" doc:name="ObjectStore Config" doc:id="4453359f-aa35-45d8-8b94-0ae675651539" />
 	<configuration doc:name="Configuration" doc:id="bb9161c5-3dea-4416-ab4b-8e26effc1bf2" defaultErrorHandler-ref="globalError_Handler" />
 	<error-handler name="globalError_Handler" doc:id="cd4dc469-a309-46ae-b830-45578428483f" >
-		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="315ea1d8-7642-4e0f-879e-fa04f4e41e5b" type="HTTP:BAD_REQUEST,VALIDATION:NULL,VALIDATION:INVALID_BOOLEAN">
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="315ea1d8-7642-4e0f-879e-fa04f4e41e5b" type="HTTP:BAD_REQUEST">
 			<ee:transform doc:name="400" doc:id="95967741-abd1-47e4-a6d3-31fa7610ea59" >
 				<ee:message >
 					<ee:set-payload ><![CDATA[%dw 2.0
@@ -169,25 +169,6 @@ output application/json
                     </ee:message>
                     <ee:variables>
                         <ee:set-variable variableName="httpStatus"><![CDATA[501]]></ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-            </on-error-propagate>
-            <on-error-propagate type="APIKIT:NOT_FOUND">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="404 APIKIT Console">
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-	"statusCode": 404,
-  	"errorType": (error.errorType.namespace default"HTTP")++":"
-  	++ (error.errorType.identifier default "BAD REQUEST"),
-  	"description": error.description,
-  	"date": now()
-}]]></ee:set-payload>
-                    </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
