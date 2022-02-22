@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<<<<<<< HEAD
-<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
-http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
 	<sub-flow name="deleteCryptosSubFlow" doc:id="7c0f9ac1-8274-4acf-8b25-97241151bf0c" >
 		<validation:is-not-null doc:name="Is not null ID" doc:id="c4cb0545-a890-4f7d-b95a-b792490ecf04" value="#[attributes.uriParams.id]" message="document id is null"/>
-		<wsc:consume operation="deleteCoin" doc:name="CoinStorageService_deleteCoin" doc:id="5abcc034-d642-41a4-9750-13fa481a6936" config-ref="CoinStorageServiceConsumerConfig">
+		<wsc:consume operation="deleteCoin" doc:name="CoinStorageService_deleteCoin" doc:id="5abcc034-d642-41a4-9750-13fa481a6936" config-ref="Web_Service_Consumer_Config">
 			<wsc:message >
 				<wsc:body ><![CDATA[#[null]]]></wsc:body>
 				<wsc:headers ><![CDATA[#[%dw 2.0
@@ -37,21 +37,9 @@ result: payload.body.ns0#deleteCoinResponse.response]]></ee:set-payload>
 		<logger level="INFO" doc:name="Logger" doc:id="64b6fcb4-a740-4268-ad11-5e668156ed75" message="#[payload]"/>
 	
 </sub-flow>
-
-=======
-<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:gmail="http://www.mulesoft.org/schema/mule/gmail"
-	xmlns:email="http://www.mulesoft.org/schema/mule/email"
-	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
-http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
-http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
-http://www.mulesoft.org/schema/mule/gmail http://www.mulesoft.org/schema/mule/gmail/current/mule-gmail.xsd
-http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<sub-flow name="getCryptos" doc:id="1545f75e-f2d1-49fa-8cd6-dc662be6843e" >
-		<set-variable value="#[attributes.queryParams.'slug']" doc:name="setSlug" doc:id="46be1a7e-2bd8-48e6-9461-3518e400a851" variableName="slug" />
-		<set-variable value="#[attributes.queryParams.'sortBy']" doc:name="set sortBy" doc:id="cebaef73-70fd-446d-b0f9-a92d0c7c10ac" variableName="sortBy"/>
+		<set-variable value="#[message.attributes.queryParams.'slug']" doc:name="setSlug" doc:id="46be1a7e-2bd8-48e6-9461-3518e400a851" variableName="slug" />
+		<set-variable value="#[message.attributes.queryParams.'sortBy']" doc:name="set sortBy" doc:id="cebaef73-70fd-446d-b0f9-a92d0c7c10ac" variableName="sortBy"/>
 		<flow-ref doc:name="to getCoinMarket" doc:id="5cf0d0b5-12d2-492e-9165-fc0b313f8163" name="getCoinMarket"/>
 		<choice doc:name="Choice" doc:id="978a94cd-4334-4c12-8df1-7273870beacf" >
 			<when expression="#[vars.sortBy == 'price']">
@@ -178,8 +166,8 @@ ns ns0 http://training.mulesoft.com/
 			</wsc:message>
 		</wsc:consume>
 		<set-variable value="#[%dw 2.0&#10;ns ns0 http://training.mulesoft.com/&#10;output text/plain&#10;---&#10;payload.headers.createCoinResponseHeader.ns0#createCoinResponseHeader.documentID]" doc:name="Set key" doc:id="e318b6de-9a10-49db-bbad-e63b1b47f618" variableName="key" />
-		<email:send doc:name="Send to Email" doc:id="f13b03b3-a222-4368-8d8a-6ac52c997e99" config-ref="Email_SMTP" fromAddress="typicm6663@gmail.com" subject="New coin created">
-			<email:to-addresses>
+		<email:send doc:name="Send" doc:id="ab8b134f-bfd0-4281-b964-de0f1047f328" config-ref="Email_SMTP" fromAddress="Typicm6663@gmail.com" subject="New coin created">
+			<email:to-addresses >
 				<email:to-address value="Typicm@gmail.com" />
 			</email:to-addresses>
 			<email:body contentType="text/plain" encoding="UTF-8">
@@ -205,7 +193,7 @@ payload]]></ee:set-variable>
 				<ee:set-variable variableName="httpStatus" ><![CDATA[201]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<os:store doc:name="Add to ObjectStore" doc:id="4677f0ff-2ab1-485a-9193-88334041591d" key="#[vars.key]" objectStore="Object_store">
+		<os:store doc:name="Store" doc:id="19fe72b3-5a66-40b6-8731-de622cc7edf6" key="vars.key" objectStore="Object_store">
 			<os:value ><![CDATA[#[payload.hash]]]></os:value>
 		</os:store>
 		<ee:transform doc:name="Transform Message" doc:id="8773c141-2fdc-45c2-be54-ed60a42150f6" >
@@ -214,14 +202,13 @@ payload]]></ee:set-variable>
 output application/json
 ---
 {
-	Message: "Document with ID: "++ (vars.key default "") ++" successfully created",
-	pay: vars.payloadXML
+	Message: "Document with ID: "++ (vars.key default "") ++" successfully created"
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</sub-flow>
 	<sub-flow name="getCoinMarket" doc:id="4661375a-7ced-4de9-8f9b-f96a9064376b" >
-		<http:request method="GET" doc:name="GET coinMarket" doc:id="71929776-d4b9-4500-89e7-6845cb29e1c8" path="/cryptocurrency/quotes/latest" config-ref="HTTP_Request_configuration2">
+		<http:request method="GET" doc:name="GET coinMarket" doc:id="71929776-d4b9-4500-89e7-6845cb29e1c8" path="/cryptocurrency/quotes/latest" config-ref="HTTP_Request_configuration_CoinMarket">
 					<http:query-params><![CDATA[#[output application/java
 ---
 {
@@ -233,7 +220,7 @@ output application/json
 		<flow-ref doc:name="getCoinCup" doc:id="2599ef11-e731-4812-ab18-5220431908de" name="getCoinCup" />
 	</sub-flow>
 	<sub-flow name="getCoinCup" doc:id="70b58ac0-9b4c-4c5f-a130-a9cb6d65e5e1" >
-		<http:request method="GET" doc:name="GET coinCup" doc:id="cd4458ac-8f76-473b-863c-0d16ac79f92b" config-ref="HTTP_Request_configuration" path="/assets">
+		<http:request method="GET" doc:name="GET coinCup" doc:id="cd4458ac-8f76-473b-863c-0d16ac79f92b" config-ref="HTTP_Request_configuration_CoinCup" path="/assets">
 					<http:query-params><![CDATA[#[output application/java
 ---
 {
@@ -243,7 +230,7 @@ output application/json
 		<set-variable value='#[payload.data map (object,index)-&gt;{&#10;			"name": object.name,&#10;     		"symbol": object.symbol,&#10;      		"coin_cap_price": object.priceUsd,&#10;      		"coin_cap_volume24h": object.volumeUsd24Hr	&#10;}]' doc:name="payload-coinCap" doc:id="a26efa45-fd42-4469-9b81-aca60d4ae6d3" variableName="coin-cap" />
 		<logger level="INFO" doc:name="Logger" doc:id="273fac5e-504c-43f1-bb3b-1660324f7c11" message='"request CoinCup is successfully"' />
 	</sub-flow>
-	<flow name="readCryptos" doc:id="1599ab17-d4e4-4141-920b-d2ddf6a19fea" >
+	<sub-flow name="readCryptos" doc:id="1599ab17-d4e4-4141-920b-d2ddf6a19fea" >
 		<set-variable value='#[attributes.uriParams.id]' doc:name="Set Variable" doc:id="89534282-e951-4034-846c-22300a3e2354" variableName="setID"/>
 		<wsc:consume doc:name="Consume" doc:id="d7d7bda6-73dd-4738-b79b-83d7ecee0552" config-ref="Web_Service_Consumer_Config" operation="readCoin">
 			<wsc:message >
@@ -315,6 +302,5 @@ output application/json
 				</ee:transform>
 			</otherwise>
 		</choice>
-	</flow>
->>>>>>> Yaremko
+	</sub-flow>
 </mule>
