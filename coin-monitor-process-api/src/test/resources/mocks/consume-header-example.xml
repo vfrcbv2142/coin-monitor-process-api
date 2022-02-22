@@ -1,0 +1,7 @@
+<headers>
+	<createCoinResponseHeader>
+		<ns0:createCoinResponseHeader xmlns:ns0="http://training.mulesoft.com/">
+  			<documentID>6213f0e96ed7180ffc97bca5</documentID>
+		</ns0:createCoinResponseHeader>
+	</createCoinResponseHeader>
+</headers>

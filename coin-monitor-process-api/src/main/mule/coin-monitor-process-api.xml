@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
+    <flow name="coin-monitor-process-api-main" doc:id="f8caf5cb-b86d-466a-9921-adf8c03f08b7">
+        <http:listener config-ref="coin-monitor-process-api-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="coin-monitor-process-api-config" />
+        
+    </flow>
+    <flow name="coin-monitor-process-api-console" doc:id="9ff0113e-8812-4658-8c89-c61ba93b880b">
+        <http:listener config-ref="coin-monitor-process-api-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="coin-monitor-process-api-config" />
+		<error-handler ref="globalError_Handler" />
+    </flow>
+    <flow name="get:\getCryptos:coin-monitor-process-api-config" doc:id="304d821f-1eac-4908-8be7-d84dc02213db">
+		<flow-ref doc:name="Flow Reference" doc:id="6b304272-ce8e-4bdd-8031-b48f036346a5" name="getCryptos"/>
+    </flow>
+    <flow name="get:\deleteCryptos\(id):coin-monitor-process-api-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core">
+            <ee:variables>
+                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+"success"]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="get:\checkPrice\(id):coin-monitor-process-api-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core">
+            <ee:variables>
+                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  oldDate: "2021-12-29T19:24:19.277Z",
+  newDate: "2021-12-30T19:24:19.277Z",
+  dateDifference: "1 day",
+  data: {
+    BTC: {
+      supply: 18918106,
+      development_status: "Working product",
+      proof_type: "Proof of work",
+      org_structure: "Decentralized",
+      "coin-market-cap-api": {
+        oldPriceUsd: "222222.2314\$",
+        newPriceUsd: "111111.2314\$",
+        priceDifference: "111111.0000\$",
+        volumeUsd24Hr: "11614307118.643514",
+        changePercent24Hr: "-1.79771639"
+      },
+      "coin-cap-api": {
+        oldPriceUsd: "126543.1234\$",
+        newPriceUsd: "111111.2314\$",
+        priceDifference: "111111.0000\$",
+        volumeUsd24Hr: "2344307118.643514",
+        changePercent24Hr: "-0.79771639"
+      }
+    },
+    ETH: {
+      supply: 13458106,
+      development_status: "Working product",
+      proof_type: "Proof of work",
+      org_structure: "Decentralized",
+      "coin-market-cap-api": {
+        oldPriceUsd: "165723.1234\$",
+        newPriceUsd: "111111.2314\$",
+        priceDifference: "111111.0000\$",
+        volumeUsd24Hr: "234565718.643514",
+        changePercent24Hr: "4.79771639"
+      },
+      "coin-cap-api": {
+        oldPriceUsd: "122343.1234\$",
+        newPriceUsd: "111111.2314\$",
+        priceDifference: "111111.0000\$",
+        volumeUsd24Hr: "1154567307118.643514",
+        changePercent24Hr: "2.23471639"
+      }
+    }
+  }
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="get:\updateCryptos\(id):coin-monitor-process-api-config">
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core">
+            <ee:variables>
+                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  date: "2021-12-29T19:24:19.277Z",
+  data: {
+    BTC: {
+      supply: 18918106,
+      development_status: "Working product",
+      proof_type: "Proof of work",
+      org_structure: "Decentralized",
+      "coin-market-cap-api": {
+        priceUsd: "222222.2314\$",
+        volumeUsd24Hr: "11614307118.643514",
+        changePercent24Hr: "-1.79771639"
+      },
+      "coin-cap-api": {
+        priceUsd: "126543.1234\$",
+        volumeUsd24Hr: "2344307118.643514",
+        changePercent24Hr: "-0.79771639"
+      }
+    },
+    ETH: {
+      supply: 13458106,
+      development_status: "Working product",
+      proof_type: "Proof of work",
+      org_structure: "Decentralized",
+      "coin-market-cap-api": {
+        priceUsd: "165723.1234\$",
+        volumeUsd24Hr: "234565718.643514",
+        changePercent24Hr: "4.79771639"
+      },
+      "coin-cap-api": {
+        priceUsd: "122343.1234\$",
+        volumeUsd24Hr: "1154567307118.643514",
+        changePercent24Hr: "2.23471639"
+      }
+    }
+  }
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+</mule>

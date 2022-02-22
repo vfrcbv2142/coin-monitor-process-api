@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+   <data>
+      <element>
+         <coin_cap_price>91.1370217429898083$</coin_cap_price>
+         <coin_cap_volume24h>837715382.7190324893950635$</coin_cap_volume24h>
+         <coin_market_price>90.99143797218301$</coin_market_price>
+         <coin_market_volume24h>1144945621.9192848$</coin_market_volume24h>
+         <name>Avalanche</name>
+         <supply>395891289.9134107</supply>
+         <symbol>AVAX</symbol>
+      </element>
+      <element>
+         <coin_cap_price>1.0026528016803501$</coin_cap_price>
+         <coin_cap_volume24h>689392862.7486780580619904$</coin_cap_volume24h>
+         <coin_market_price>0.9994791093017497$</coin_market_price>
+         <coin_market_volume24h>3984343465.278914$</coin_market_volume24h>
+         <name>Binance USD</name>
+         <supply>17322395417.409256</supply>
+         <symbol>BUSD</symbol>
+      </element>
+      <element>
+         <coin_cap_price>44190.8479268691908818$</coin_cap_price>
+         <coin_cap_volume24h>13435368875.5020764147666897$</coin_cap_volume24h>
+         <coin_market_price>44105.45581032806$</coin_market_price>
+         <coin_market_volume24h>23989277260.019726$</coin_market_volume24h>
+         <name>Bitcoin</name>
+         <supply>18953175</supply>
+         <symbol>BTC</symbol>
+      </element>
+      <element>
+         <coin_cap_price>3207.2104006990955933$</coin_cap_price>
+         <coin_cap_volume24h>9248947658.4637946969305794$</coin_cap_volume24h>
+         <coin_market_price>3201.2236514138003$</coin_market_price>
+         <coin_market_volume24h>13636863310.394375$</coin_market_volume24h>
+         <name>Ethereum</name>
+         <supply>119512189.8115</supply>
+         <symbol>ETH</symbol>
+      </element>
+      <element>
+         <coin_cap_price>0.0000333303299581$</coin_cap_price>
+         <coin_cap_volume24h>2061239967.3467261996347013$</coin_cap_volume24h>
+         <coin_market_price>0.00003320517660570053$</coin_market_price>
+         <coin_market_volume24h>2755644325.1646457$</coin_market_volume24h>
+         <name>Shiba Inu</name>
+         <supply>589735030408322.8</supply>
+         <symbol>SHIB</symbol>
+      </element>
+      <element>
+         <coin_cap_price>1.0032440580819703$</coin_cap_price>
+         <coin_cap_volume24h>36350775799.9233269249100354$</coin_cap_volume24h>
+         <coin_market_price>1.0006608212535468$</coin_market_price>
+         <coin_market_volume24h>55018557463.69468$</coin_market_volume24h>
+         <name>Tether</name>
+         <supply>80074697052.59753</supply>
+         <symbol>USDT</symbol>
+      </element>
+   </data>
+   <date>2022-02-09T20:47:57.721+02:00</date>
+</root>
