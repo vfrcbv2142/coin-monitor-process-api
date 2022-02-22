@@ -1,0 +1,6 @@
+{
+  "statusCode": "401",
+  "errorType": "Unauthorized",
+  "description": "You're not authorized",
+  "date": "2020-12-29T19:24:19.277Z"
+}
