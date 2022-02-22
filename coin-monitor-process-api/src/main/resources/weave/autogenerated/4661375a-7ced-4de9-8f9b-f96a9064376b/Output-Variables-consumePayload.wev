@@ -1,0 +1,7 @@
+%dw 2.0
+
+type auto_4661375a_7ced_4de9_8f9b_f96a9064376b_Output_Variables_consumePayload = {|
+  date: String, 
+  data: Array<{|    name: String,     symbol: String,     supply: String,     description: String,     developmentStatus: String,     proofType: String,     orgStructure: String,     coin_market_price: String,     coin_cap_price: String,     coin_market_volume24h: String,     coin_cap_volume24h: String  |}> | Null
+|}
+

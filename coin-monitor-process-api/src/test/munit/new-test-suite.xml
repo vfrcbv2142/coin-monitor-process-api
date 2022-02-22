@@ -522,6 +522,57 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 		</munit:validation>
 	
 </munit:test>
+<munit:test name="checkCryptosPrices-normal-Test" doc:id="9b21bd85-8b62-41ea-9b15-def7129a11e9">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock SOAP Read" doc:id="99dd76f4-0fc2-459b-9e71-d98b199bec56" processor="wsc:consume">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="ca8073e9-5bbd-4ce5-8fe9-4d92ecd68048" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/soap-read-example200.xml')]" mediaType="application/xml" encoding="UTF-8" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock coinMarketRequest" doc:id="73bd1d75-595c-4775-85f9-177b07e82d86" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="71929776-d4b9-4500-89e7-6845cb29e1c8" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/MarketCap-example200.json')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value='#[&#10;&#10;    {&#10;&#10;      "statusCode": 200&#10;&#10;    }&#10;&#10;]' />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock coinCapRequest" doc:id="da881a25-8167-4b8d-801f-de48d6a682e2" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="cd4458ac-8f76-473b-863c-0d16ac79f92b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/CoinCap-example200.json')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value='#[&#10;&#10;    {&#10;&#10;      "statusCode": 200&#10;&#10;    }&#10;&#10;]' />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock SOAP Update" doc:id="22ac1866-2c51-44dc-b15e-d1f9677f554d" processor="wsc:consume">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4091c497-d290-4ae1-a0fd-ae95f95da50b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/updateCoin-example.xml')]" mediaType="application/xml" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		
+</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="getCheckPrices" doc:id="44f66abe-0cfd-4460-9e9e-2c21df0e10b5" name="get:\checkCryptosPrice\(id):coin-monitor-process-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="9c51bd5c-9b5f-461a-84f1-2f0a93fbba3b" processor="flow-ref" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="99163772-5f4a-40ef-91cf-166a042951be" attributeName="doc:id" />
+				</munit-tools:with-attributes>
 
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
 
 </mule>

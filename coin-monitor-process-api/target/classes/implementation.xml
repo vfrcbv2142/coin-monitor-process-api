@@ -303,4 +303,214 @@ output application/json
 			</otherwise>
 		</choice>
 	</sub-flow>
+	<sub-flow name="checkpricesFlow" doc:id="f00b3b88-9084-4c8c-bb80-21148aba9bf0" >
+		<set-variable value="#[message.attributes.uriParams.id]" doc:name="Set Key" doc:id="f813738c-112e-477d-8406-b0336dbf96de" variableName="key"/>
+		<wsc:consume doc:name="Read data from SOAP" doc:id="ca8073e9-5bbd-4ce5-8fe9-4d92ecd68048" config-ref="Web_Service_Consumer_Config" operation="readCoin">
+			<wsc:message >
+				<wsc:body ><![CDATA[#[null]]]></wsc:body>
+				<wsc:headers ><![CDATA[#[%dw 2.0
+output application/xml
+
+ns ns0 http://training.mulesoft.com/
+  ---
+  
+  "headers": {
+  	
+  	ns0#readCoinHeader:{
+  		documentID: vars.key
+  	}
+  }]]]></wsc:headers>
+			</wsc:message>
+		</wsc:consume>
+		<choice doc:name="Choice" doc:id="c0d32725-1f8b-49ef-baea-4415af5289a1" >
+      <when expression="#[%dw 2.0&#10;ns ns0 http://training.mulesoft.com/&#10;---&#10;payload.body.ns0#readCoinResponse.response == null]">
+				<ee:transform doc:name="set consumePayload" doc:id="f0cab224-cb10-402c-8c2a-c7930dbbec55">
+							<ee:message>
+							</ee:message>
+							<ee:variables>
+								<ee:set-variable variableName="consumePayload"><![CDATA[%dw 2.0
+output application/json
+ns ns0 http://training.mulesoft.com/
+---
+{
+	date: payload.body.ns0#readCoinResponse.date default "",
+	data: payload.body.ns0#readCoinResponse.data.*coin map ( coin , indexOfCoin ) -> {
+		name: coin.name default "",
+		symbol: coin.symbol default "",
+		supply: coin.supply default "",
+		description: coin.description default "",
+		developmentStatus: coin.developmentStatus default "",
+		proofType: coin.proofType default "",
+		orgStructure: coin.orgStructure default "",
+		coin_market_price: coin.coin_market_price default "",
+		coin_cap_price: coin.coin_cap_price default "",
+		coin_market_volume24h: coin.coin_market_volume24h default "",
+		coin_cap_volume24h: coin.coin_cap_volume24h default ""
+	}
+}
+
+]]></ee:set-variable>
+							</ee:variables>
+						</ee:transform>
+				<ee:transform doc:name="create array of slugs" doc:id="c7a47dde-eda9-46f6-a597-4fdb13ba7c99">
+					<ee:message>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="slug"><![CDATA[%dw 2.0
+output application/json
+
+---
+vars.consumePayload.data map ( datum , indexOfDatum ) -> {
+	slug: datum.name
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<set-variable value='#[lower(flatten(vars.slug.slug) joinBy ",") replace " " with "-"]' doc:name="create string from array of slugs" doc:id="fe8f71e0-5172-4eeb-ad5c-0325a104c29c" variableName="slug1" />
+				<flow-ref doc:name="get coinMarket" doc:id="99163772-5f4a-40ef-91cf-166a042951be" name="getCoinMarket" />
+				<flow-ref doc:name="get coinCap" doc:id="21894dd3-971f-42f7-a029-611f8e5fd9f3" name="getCoinCup"/>
+				<ee:transform doc:name="set requestsPayload" doc:id="3e1d43db-898e-4530-be5e-a0ca05ad0b7e">
+					<ee:message>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="requestPayload"><![CDATA[%dw 2.0
+output application/json
+import modules::trimString
+var dat = vars.market
+var dat1 = vars.cap
+var body={
+  "data": dat map (object, index)->{
+    "data1" : dat1 map(object2,index2)->{
+         ("name": object.name)if(object.name==object2.name or object2.name==null),
+         ("symbol": object.symbol)if(object.name==object2.name),
+         ("supply": object.supply as String)if(object.name==object2.name),
+          ("coin_market_price": object.'coin_market_price' ++ " " ++ "\$")if(object.name==object2.name),
+          ("coin_cap_price": object2.'coin_cap_price' default "" ++ " " ++ "\$")if(object.name==object2.name),
+          ("coin_market_volume24h":trimString::trimStringOfDigits(object.'coin_market_volume24h',2) ++ " " ++ "\$")if(object.name==object2.name),
+          ("coin_cap_volume24h": trimString::trimStringOfDigits(object2.'coin_cap_volume24h' default "" ,2) ++ " " ++ "\$")if(object.name==object2.name)
+  }
+   }
+}
+
+---
+{
+"date": now() as String,
+  "data":(flatten(body.data.data1) filter(value,index)->(sizeOf(value)>0)) orderBy $.name
+  
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<ee:transform doc:name="combine Data" doc:id="40878322-63e3-4256-9dfb-c9928f233ad8">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+var dataR = vars.requestPayload  
+var dataC = vars.consumePayload
+var oldDate = vars.consumePayload.date 
+var dateDiff = (now() - oldDate)
+var body={
+	"data": dataC.data map (object, index)->{
+		"data1": dataR.data  map(object2,index2)->{
+			("name": object.name default " ")if(object.name==object2.name or object2.name==null),
+			("symbol": object.symbol)if(object.name==object2.name),
+			("supply": object.supply as String)if(object.name==object2.name),
+			("description": object.description)if(object.name==object2.name),
+			("developmentStatus": object.developmentStatus) if (object.name==object2.name),
+			("proofType": object.proofType) if (object.name==object2.name),
+			("orgStructure": object.orgStructure) if (object.name==object2.name),
+			("coin_market_oldPriceUsd": object.coin_market_price) if (object.name==object2.name),
+			("coin_cap_oldPriceUsd": object.coin_cap_price) if (object.name==object2.name),
+			("coin_market_newPriceUsd": object2.'coin_market_price') if (object.name==object2.name),
+			("coin_cap_newPriceUsd": object2.'coin_cap_price') if (object.name==object2.name),
+			("coin_market_priceDifference": (((((object2.coin_market_price replace "\$" with "")replace " " with "") as Number)  - (((object.coin_market_price replace "\$" with "")replace " " with "") as Number)) as Number) ++ " " ++ "\$" as String) if (object.name==object2.name),
+			("coin_cap_priceDifference": (((((object2.coin_cap_price replace "\$" with "")replace " " with "") as Number)  - (((object.coin_cap_price replace "\$" with "")replace " " with "") as Number)) as Number) ++ " " ++ "\$" as String) if (object.name==object2.name),
+			("coin_market_volume24h": object2.'coin_market_volume24h')if(object.name==object2.name),
+			("coin_cap_volume24h":object2.'coin_cap_volume24h' )if(object.name==object2.name)
+		}
+	}
+}
+---
+{
+	"oldDate": oldDate as String,
+	"newDate": now() as String,
+	"dateDifference": dateDiff.days as String ++ " days, " ++ dateDiff.hours as String ++ " hours, " ++ dateDiff.minutes as String ++ " minutes, " ++ dateDiff.secs as String ++ " seconds",
+	"data": (flatten(body.data.data1) filter(value,index)->(sizeOf(value)>0)) orderBy $.name 
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<ee:transform doc:name="Json to XML" doc:id="7f1aefe2-55eb-46d2-9bcb-d7d3f37c6ed1">
+					<ee:message>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="XMLPayload"><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://training.mulesoft.com/
+---
+  ns0#updateCoin: {
+    oldDate: payload.oldDate,
+    newDate: payload.newDate,
+	dateDifference: payload.dateDifference, 
+    data:{(payload.data map (object, index)-> {
+      coin: object
+  })
+  }
+ }]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<wsc:consume doc:name="Update Coin" doc:id="4091c497-d290-4ae1-a0fd-ae95f95da50b" operation="updateCoin" config-ref="Web_Service_Consumer_Config">
+					<wsc:message>
+						<wsc:body><![CDATA[#[vars.XMLPayload]]]></wsc:body>
+						<wsc:headers><![CDATA[#[%dw 2.0
+output application/xml
+
+ns ns0 http://training.mulesoft.com/
+  ---
+  
+  "headers": {
+  	
+  	ns0#updateCoinHeader:{
+  		documentID: vars.key
+  	}
+  }]]]></wsc:headers>
+					</wsc:message>
+				</wsc:consume>
+				<ee:transform doc:name="Final response" doc:id="ebf00d7e-a61b-4707-b142-0483a5c3cbdb">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+ns ns0 http://training.mulesoft.com/
+
+output application/json
+---
+{
+	
+  "result": payload.body.ns0#updateCoinResponse.response
+}
+]]></ee:set-payload>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="httpStatus"><![CDATA[201]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+
+      
+</when>
+			<otherwise >
+        <ee:transform doc:name="Document doesn't exist" doc:id="f99f200c-4671-474e-bd2b-5003ed6519cb" >
+          <ee:message >
+            <ee:set-payload ><![CDATA[%dw 2.0
+ns ns0 http://training.mulesoft.com/
+
+output application/json
+---
+{
+  result: payload.body.ns0#readCoinResponse.response
+}]]></ee:set-payload>
+          </ee:message>
+          <ee:variables >
+            <ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+          </ee:variables>
+        </ee:transform>
+      </otherwise>
+    </choice>
+	
+</sub-flow>
 </mule>
