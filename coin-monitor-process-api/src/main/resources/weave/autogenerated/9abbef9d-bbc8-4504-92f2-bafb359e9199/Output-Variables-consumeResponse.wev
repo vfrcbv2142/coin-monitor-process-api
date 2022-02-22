@@ -1,0 +1,7 @@
+%dw 2.0
+
+type auto_9abbef9d_bbc8_4504_92f2_bafb359e9199_Output_Variables_consumeResponse = {|
+  date: String | Null, 
+  data: Array<{|    name: String,     symbol: String,     supply: String,     coin_market_price: String | Null,     coin_cap_price: String | Null,     coin_market_volume24h: String,     coin_cap_volume24h: String  |}> | Null
+|}
+

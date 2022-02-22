@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:email="http://www.mulesoft.org/schema/mule/email"
 	xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
-	xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
@@ -231,7 +233,7 @@ output application/json
 		<logger level="INFO" doc:name="Logger" doc:id="273fac5e-504c-43f1-bb3b-1660324f7c11" message='"request CoinCup is successfully"' />
 	</sub-flow>
 	<sub-flow name="readCryptos" doc:id="1599ab17-d4e4-4141-920b-d2ddf6a19fea" >
-		<set-variable value='#[attributes.uriParams.id]' doc:name="Set Variable" doc:id="89534282-e951-4034-846c-22300a3e2354" variableName="setID"/>
+		<set-variable value='#[message.attributes.uriParams.id]' doc:name="Set Variable" doc:id="89534282-e951-4034-846c-22300a3e2354" variableName="setID"/>
 		<wsc:consume doc:name="Consume" doc:id="d7d7bda6-73dd-4738-b79b-83d7ecee0552" config-ref="Web_Service_Consumer_Config" operation="readCoin">
 			<wsc:message >
 				<wsc:body ><![CDATA[#[null]]]></wsc:body>
@@ -513,4 +515,220 @@ output application/json
     </choice>
 	
 </sub-flow>
+<sub-flow name="update_sub_slow" doc:id="9abbef9d-bbc8-4504-92f2-bafb359e9199" >
+		<set-variable value='#[attributes.uriParams."id"]' doc:name="Set documentID" doc:id="18da3cb9-5a81-4a51-923f-953bea3be4b1" variableName="id"/>
+		<wsc:consume operation="readCoin" doc:name="Get all data from SOAP by id" doc:id="6a7ec993-3721-40b9-a03d-38b308679cd8" config-ref="Web_Service_Consumer_Config">
+			<wsc:message >
+				<wsc:body ><![CDATA[#[null]]]></wsc:body>
+				<wsc:headers ><![CDATA[#[%dw 2.0
+output application/xml
+ns ns0 http://training.mulesoft.com/
+  ---
+  "headers": {
+    ns0#readCoinHeader:{
+      documentID: vars.id
+      }
+  }]]]></wsc:headers>
+			</wsc:message>
+		</wsc:consume>
+		<choice doc:name="Choice" doc:id="b9aefe58-c419-4b90-8020-76f74a303c39" >
+      <when expression="#[%dw 2.0&#10;ns ns0 http://training.mulesoft.com/&#10;---&#10;payload.body.ns0#readCoinResponse.response == null]">
+				<ee:transform doc:name="XML to JSON" doc:id="8558fba5-7f76-49ce-9c2c-3be7b632c623">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+ns ns0 http://training.mulesoft.com/
+
+output application/json
+---
+{
+  date: payload.body.ns0#readCoinResponse.date,
+  data: payload.body.ns0#readCoinResponse.data.*coin map (object, index) -> {
+    name: object.name,
+    symbol: object.symbol,
+    supply: object.supply,
+    'coin_market_price': object.'coin_market_price',
+    'coin_cap_price': object.'coin_cap_price',
+    'coin_market_volume24h': object.'coin_market_volume24h',
+    'coin_cap_volume24h':object.'coin_cap_volume24h'
+  }
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="consumeResponse"><![CDATA[%dw 2.0
+ns ns0 http://training.mulesoft.com/
+
+output application/json
+---
+{
+  date: payload.body.ns0#readCoinResponse.date,
+  data: payload.body.ns0#readCoinResponse.data.*coin map (object, index) -> {
+    name: object.name,
+    symbol: object.symbol,
+    supply: object.supply,
+    'coin_market_price': object.'coin_market_price',
+    'coin_cap_price': object.'coin_cap_price',
+    'coin_market_volume24h': object.'coin_market_volume24h',
+    'coin_cap_volume24h':object.'coin_cap_volume24h'
+  }
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+				<ee:transform doc:name="Map all coin_ids for next requests" doc:id="e0ece93a-e701-45d3-99e5-b6eb08585b43">
+			<ee:message>
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"coin-ids" : payload.data map (object, index) -> {
+		"coin_id" : lower(object.symbol ++ "-" ++ object.name replace " " with("-") )
+	}
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables>
+			</ee:variables>
+		</ee:transform>
+				<set-payload value='#[%dw 2.0
+&#10;output application/java
+&#10;---
+&#10;payload."coin-ids".*"coin_id"]' doc:name="Set coin_ids as java Array" doc:id="10a1f7e3-48c6-4dc4-877b-90a7be387a1b" />
+				<batch:job jobName="implementationBatch_Job" doc:id="2d87dda7-870a-4ea4-a83e-43f40ccf2f2f">
+			<batch:process-records>
+				<batch:step name="Batch_Step" doc:id="f38088f3-8474-4a72-bc83-5df3d0cf5938">
+					<http:request method="GET" doc:name="GET data from coin-paprika-system-api" doc:id="f5e64104-8a21-445a-80b4-9012c8f7c2a4" config-ref="HTTP_Request_configuration_to_coinpaprika" path="/coins/{coin_id}">
+				<http:uri-params><![CDATA[#[output application/java
+---
+{
+	"coin_id" : payload
+}]]]></http:uri-params>
+			</http:request>
+					<batch:aggregator doc:name="Batch Aggregator" doc:id="99da51e3-50a9-4dd6-9038-df5a53286e89" size="100" preserveMimeTypes="true">
+						<ee:transform doc:name="Convert to JSON" doc:id="cd724c63-e4ca-4354-b025-2e18a2f4b12e">
+							<ee:message>
+								<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload as Array]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+								<vm:publish doc:name="Publish" doc:id="93156dd4-d24b-4517-80ba-b92b3410a085" config-ref="VM_Config_b_Ostap" queueName="sysResponse" />
+					</batch:aggregator>
+				</batch:step>
+			
+</batch:process-records>
+		
+</batch:job>
+				<vm:consume queueName="allDataResponse" doc:name="Consume" doc:id="044466b1-1859-4789-9d8c-fa92edc29638" config-ref="VM_Config_b_Ostap" timeout="60"/>
+				<ee:transform doc:name="Map all data" doc:id="8bd54940-9df7-4fe2-920a-eae8ae98b598" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+var body={
+	"data": payload as Array map(object,index) ->{
+		"data1": vars.consumeResponse.data map(object2,index2)->{
+			("name":object2.name)if(object2.name==object.name),
+			("symbol": object2.symbol)if(object2.name==object.name),
+			("supply": object2.supply as String)if(object2.name==object.name),
+			("description": object.description)if(object2.name==object.name),
+			("developmentStatus": object.development_status)if(object2.name==object.name),
+			("proofType": object.proof_type)if(object2.name==object.name),
+			("orgStructure": object.org_structure)if(object2.name==object.name),
+			("coin_market_price": object2."coin_market_price" default "")if(object2.name==object.name),
+			("coin_cap_price": object2.'coin_cap_price' default "")if(object2.name==object.name),
+			("coin_market_volume24h":object2.'coin_market_volume24h' default "")if(object2.name==object.name),
+			("coin_cap_volume24h": object2.'coin_cap_volume24h' default "")if(object2.name==object.name)
+		}
+	}
+}
+output application/json
+---
+{
+	"date":vars.consumeResponse.date,
+	"data":(flatten(body.data.data1)filter(value,index)->(sizeOf(value)>0))
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<ee:transform doc:name="JSON to XML" doc:id="02023668-b2c2-48e5-85da-7cdbe3d1912d">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://training.mulesoft.com/
+---
+  ns0#updateCoin: {
+  	date:payload.date,
+    data:{(payload.data map (object, index)-> {
+      coin: object
+  })
+  }
+ }]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<wsc:consume operation="updateCoin" doc:name="Update data by documentID" doc:id="594c6ec3-5d08-484a-86fd-cc7cb13ef674" config-ref="Web_Service_Consumer_Config">
+					<wsc:message >
+						<wsc:headers ><![CDATA[#[%dw 2.0
+output application/xml
+
+ns ns0 http://training.mulesoft.com/
+  ---
+  
+  "headers": {
+   
+   ns0#updateCoinHeader:{
+    documentID: vars.id
+   }
+  }]]]></wsc:headers>
+					</wsc:message>
+				</wsc:consume>
+				<email:send doc:name="Send successful e-mail" doc:id="ac601857-89e9-4cb8-88ad-2dff4af02108" config-ref="Email_SMTP_by_Ostap" fromAddress="ostap20021906@gmail.com" subject="Successful">
+					<email:to-addresses >
+						<email:to-address value="cobra228325@gmail.com" />
+					</email:to-addresses>
+					<email:body contentType="text/plain" encoding="UTF-8">
+						<email:content ><![CDATA[#[%dw 2.0
+ns ns0 http://training.mulesoft.com/
+
+output text/plain
+---
+payload.body.ns0#updateCoinResponse.response]]]></email:content>
+					</email:body>
+				</email:send>
+				<ee:transform doc:name="Response" doc:id="23032125-ad05-4bef-91ac-65031471da62">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+ns ns0 http://training.mulesoft.com/
+
+output application/json
+---
+{
+	"result": payload.body.ns0#updateCoinResponse.response
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="httpStatus"><![CDATA[201]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+      
+</when>
+      <otherwise >
+        <ee:transform doc:name="Document doesn't exist" doc:id="76390a89-bfa4-47ee-aa4f-346822eab103" >
+          <ee:message >
+            <ee:set-payload ><![CDATA[%dw 2.0
+ns ns0 http://training.mulesoft.com/
+
+output application/json
+---
+{
+  result: payload.body.ns0#readCoinResponse.response
+}]]></ee:set-payload>
+          </ee:message>
+          <ee:variables >
+            <ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+          </ee:variables>
+        </ee:transform>
+      </otherwise>
+    </choice>
+	</sub-flow>
+	<flow name="returnAllNewDataSubFlow" doc:id="0c10fa6f-343b-4792-b218-b5644779740e" initialState="started">
+		<vm:listener queueName="sysResponse" doc:name="Listener" doc:id="4c16f0e0-9378-435d-b2e5-c4152146f3aa" config-ref="VM_Config_b_Ostap" numberOfConsumers="50" timeout="3"/>
+		<logger level="INFO" doc:name="Log of allNewData" doc:id="f4a97f98-0379-4f00-a49b-f6cc36270890" message="#[payload]"/>
+		<vm:publish queueName="allDataResponse" doc:name="Publish" doc:id="1dc6656f-d8e1-42d0-b220-a6c8029ec3e5" config-ref="VM_Config_b_Ostap"/>
+	</flow>
 </mule>

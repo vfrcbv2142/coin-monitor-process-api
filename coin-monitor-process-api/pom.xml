@@ -130,6 +130,12 @@
 			<version>1.0.2</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.mule.connectors</groupId>
+			<artifactId>mule-vm-connector</artifactId>
+			<version>2.0.0</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
 	</dependencies>
 
 	<repositories>
@@ -160,4 +166,3 @@
 	</pluginRepositories>
 
 </project>
-

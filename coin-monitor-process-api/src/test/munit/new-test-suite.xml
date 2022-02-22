@@ -56,8 +56,9 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 			</munit-tools:mock-when>
 			<munit-tools:mock-when doc:name="Mock Email" doc:id="c25ec8df-6de2-46a6-8d76-6c4c9c7ec334" processor="email:send">
 				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="f13b03b3-a222-4368-8d8a-6ac52c997e99" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="ab8b134f-bfd0-4281-b964-de0f1047f328" attributeName="doc:id" />
 				</munit-tools:with-attributes>
+
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
@@ -412,7 +413,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 				<flow-ref doc:name="to createCryptos" doc:id="7833ab81-e0c3-430d-9c9a-9aff445f59b1" name="get:\createCryptos:coin-monitor-process-api-config" />
 			</munit:execution>
 		</munit:test>
-	<munit:test name="readCoin-Test" doc:id="6479d539-ab96-4421-8520-aa20b79f249d" >
+	<munit:test name="readCoin-Test" doc:id="6479d539-ab96-4421-8520-aa20b79f249d">
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock consume" doc:id="d15ea01d-f46d-4bf4-b9b2-f1bcd7510c11" processor="wsc:consume" >
 				<munit-tools:with-attributes >
@@ -571,6 +572,94 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 					<munit-tools:with-attribute whereValue="99163772-5f4a-40ef-91cf-166a042951be" attributeName="doc:id" />
 				</munit-tools:with-attributes>
 
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="update-successfulTest" doc:id="a1ad1516-c36c-4d6e-a07c-61c7a4d3dc72">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="Mock of Successful response from SOAP" doc:id="5a7b0ab6-e25e-4db0-8267-e88c899b7c21" processor="wsc:consume">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="f5509784-89b9-4577-b696-97aede9bac96" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/soapResponse.xml')]" mediaType="application/xml" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:spy doc:name="Spy" doc:id="d3494773-f801-4309-9ac8-459e7b0ab981" processor="vm:consume">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="bc5c97ce-10bb-4569-83ff-d936ce20871a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:before-call>
+					<munit-tools:mock-when doc:name="Mock of HTTP Request in Batch Step" doc:id="75aa3d3b-8520-4725-be5e-eba265c27895" processor="http:request">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="6551e95c-e3d0-44a9-b658-f90688780116" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/requestResponse.json')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+					<munit-tools:mock-when doc:name="Mock of executing returnAllNewDataSubFlow" doc:id="87bb854b-b0c1-4287-9aa2-4a802d805381" processor="vm:publish">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="3d130d6c-8425-4931-9ac5-c6a4b03683ec" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-call flow="returnAllNewDataSubFlow" />
+			</munit-tools:mock-when>
+				</munit-tools:before-call>
+				<munit-tools:after-call >
+					<munit-tools:mock-when doc:name="Mock of Consume" doc:id="9b0c410e-0635-43b4-9c6c-f37194ebb20c" processor="vm:consume">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="bc5c97ce-10bb-4569-83ff-d936ce20871a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/allNewDataResponse.json')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+				</munit-tools:after-call>
+			</munit-tools:spy>
+			<munit-tools:mock-when doc:name="Mock of response from SOAP when updating data" doc:id="64350ee5-7970-4c5c-9097-f7e537930a97" processor="wsc:consume">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="6ae5e0bb-ee74-4374-ab4d-420dca1d8fa8" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/soapUpdateResponse.xml')]" mediaType="application/xml" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock of Email Sending" doc:id="bde4d7c3-7dc6-4c82-8649-bd500e84436d" processor="email:send">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="781fa466-7575-4624-9b17-bc0b5e06f12f" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<flow-ref doc:name="Flow Reference to GET:/updateCryptos/{id}" doc:id="d11afbba-2b0a-4e40-b0d9-71ab0ffc55f9" name="get:\updateCryptos\(id):coin-monitor-process-api-config" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:verify-call doc:name="Verify call to final Transform Message" doc:id="9f36e642-6058-4fa6-a713-84fbbee223a9" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="34322c0f-5835-4988-8c01-87219a1c190d" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="update-failTest" doc:id="e8684f1a-a783-4455-a489-14ebca9600ca">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="Mock of Bad Response from SOAP" doc:id="901dd169-3212-483e-91cf-2c53341ae3f4" processor="wsc:consume" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="f5509784-89b9-4577-b696-97aede9bac96" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/soapBadResponse.xml')]" mediaType="application/xml" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference to GET:/updateCryptos/{id}" doc:id="6d5d1f33-d0b6-4d04-ab13-fdec8ab0b61b" name="get:\updateCryptos\(id):coin-monitor-process-api-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call to Transform Message in Choice" doc:id="2280c799-5b43-4182-9ee0-cc1605ddb098" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d7cffc6f-4165-4b8e-87a2-bce145d5a973" attributeName="doc:id" />
+				</munit-tools:with-attributes>
 			</munit-tools:verify-call>
 		</munit:validation>
 	</munit:test>

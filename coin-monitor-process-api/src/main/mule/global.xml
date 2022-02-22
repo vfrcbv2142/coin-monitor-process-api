@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
 	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
 	xmlns:os="http://www.mulesoft.org/schema/mule/os"
 	xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:http="http://www.mulesoft.org/schema/mule/http"
@@ -10,6 +11,8 @@ http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/em
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<http:listener-config name="coin-monitor-process-api-httpListenerConfig">
         <http:listener-connection host="${httpLc.host}" port="${httpLc.port}" />
@@ -25,6 +28,24 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="e199bfcc-a391-453b-8f0b-98320e86ed9c" >
 		<wsc:connection wsdlLocation="http://coin-storage-system-api.us-e2.cloudhub.io/CoinStorageService?wsdl" service="CoinStorageService" port="CoinStorageServiceSOAP" />
 	</wsc:config>
+	<http:request-config name="HTTP_Request_configuration_to_coinpaprika" doc:name="HTTP Request configuration" doc:id="537ff00e-887a-44f5-bdf1-de2fcddea8b1" basePath="/api" >
+		<http:request-connection host="coin-paprica-system-api1.us-e2.cloudhub.io" port="80" />
+	</http:request-config>
+	<vm:config name="VM_Config_b_Ostap" doc:name="VM Config" doc:id="5b21ee8d-99b7-4412-9072-025e854dc1fa" >
+		<vm:connection />
+		<vm:queues >
+			<vm:queue queueName="sysResponse" />
+			<vm:queue queueName="allDataResponse" />
+		</vm:queues>
+	</vm:config>
+
+	<email:smtp-config name="Email_SMTP_by_Ostap" doc:name="Email SMTP" doc:id="89013f30-551b-4002-a7f7-5c557ceee160" >
+		<email:smtp-connection host="smtp.gmail.com" port="587" user="ostap20021906@gmail.com" password="Ostapvulka2020" >
+			<email:properties >
+				<email:property key="mail.smtp.starttls.enable" value="true" />
+			</email:properties>
+		</email:smtp-connection>
+	</email:smtp-config>
 	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="4d22cde0-7a63-4bad-a763-1c81a8d3cf3e" >
 		<email:smtp-connection host="${emailCreateCoin.host}" port="${emailCreateCoin.port}" user="${emailCreateCoin.user}" password="${emailCreateCoin.password}" >
 			<email:properties >
@@ -151,7 +172,10 @@ output application/json
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="501 APIKIT">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="501 APIKIT">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
