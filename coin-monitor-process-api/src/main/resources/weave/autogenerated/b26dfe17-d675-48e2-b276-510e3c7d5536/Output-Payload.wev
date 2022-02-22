@@ -1,8 +1,0 @@
-%dw 2.0
-
-type auto_b26dfe17_d675_48e2_b276_510e3c7d5536_Output_Payload = {
-  date: String, 
-  data: Array<{    symbol: String,     orgStructure: String,     proofType: String,     coin_market_volume24h: String,     name: String,     coin_cap_price: String,     coin_cap_volume24h: String,     supply: String,     coin_market_price: String,     developmentStatus: String,     _?: Any  }>, 
-  _?: Any
-}
-
