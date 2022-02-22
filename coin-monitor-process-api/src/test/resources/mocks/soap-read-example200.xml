@@ -1,0 +1,87 @@
+<body><ns0:readCoinResponse xmlns:ns0="http://training.mulesoft.com/">
+  <date>2022-02-17T19:08:52.148Z</date>
+  <data>
+    <coin>
+      <name>Avalanche</name>
+      <symbol>AVAX</symbol>
+      <supply>395891289.9134107</supply>
+      <description>Avalanche is an open-source platform for launching decentralized finance applications and enterprise blockchain deployments in one interoperable, highly scalable ecosystem. Developers who build on Avalanche can easily create powerful, reliable, and secure applications and custom blockchain networks with complex rulesets or build on existing private or public subnets. Avalanche gives you complete control on both the network and application layers–helping you build anything you can imagine.</description>
+      <developmentStatus>Working product</developmentStatus>
+      <proofType>Proof of Stake</proofType>
+      <orgStructure>Semi-centralized</orgStructure>
+      <coin_market_price>88.76542413701414$$</coin_market_price>
+      <coin_cap_price>88.7458354903232215$$</coin_cap_price>
+      <coin_market_volume24h>1802436518.26$$</coin_market_volume24h>
+      <coin_cap_volume24h>1109595678.62$$</coin_cap_volume24h>
+    </coin>
+    <coin>
+      <name>Binance USD</name>
+      <symbol>BUSD</symbol>
+      <supply>17795128019.589256</supply>
+      <description/>
+      <developmentStatus>Only token</developmentStatus>
+      <proofType>Not mineable</proofType>
+      <orgStructure>Centralized</orgStructure>
+      <coin_market_price>1.000628139981766$$</coin_market_price>
+      <coin_cap_price>1.0015714302320808$$</coin_cap_price>
+      <coin_market_volume24h>4495974372.00$$</coin_market_volume24h>
+      <coin_cap_volume24h>558903673.33$$</coin_cap_volume24h>
+    </coin>
+    <coin>
+      <name>Bitcoin</name>
+      <symbol>BTC</symbol>
+      <supply>18961218</supply>
+      <description>Bitcoin is a cryptocurrency and worldwide payment system. It is the first decentralized digital currency, as the system works without a central bank or single administrator.</description>
+      <developmentStatus>Working product</developmentStatus>
+      <proofType>Proof of Work</proofType>
+      <orgStructure>Decentralized</orgStructure>
+      <coin_market_price>41212.85157079094$$</coin_market_price>
+      <coin_cap_price>41265.4595105230980842$$</coin_cap_price>
+      <coin_market_volume24h>24165385647.67$$</coin_market_volume24h>
+      <coin_cap_volume24h>12712353633.01$$</coin_cap_volume24h>
+    </coin>
+    <coin>
+      <name>Ethereum</name>
+      <symbol>ETH</symbol>
+      <supply>119620668.874</supply>
+      <description>Ethereum is a decentralized platform for applications. Applications build on it can use smart contracts - computer algorithms which execute themselves when data is supplied to the platform. There is no need for any human operators.</description>
+      <developmentStatus>Working product</developmentStatus>
+      <proofType>Ethereum consensus (currently proof of work, will be proof of stake later on)</proofType>
+      <orgStructure>Semi-centralized</orgStructure>
+      <coin_market_price>2918.0124843241933$$</coin_market_price>
+      <coin_cap_price>2922.0894672825314061$$</coin_cap_price>
+      <coin_market_volume24h>16473058881.69$$</coin_market_volume24h>
+      <coin_cap_volume24h>11182410417.31$$</coin_cap_volume24h>
+    </coin>
+    <coin>
+      <name>Shiba Inu</name>
+      <symbol>SHIB</symbol>
+      <supply>589735030408322.8</supply>
+      <description>SHIB is an experiment in decentralized spontaneous community building. SHIB token is our first token and allows users to hold Billions or even Trillions of them.  Nicknamed the DOGECOIN KILLER, this ERC-20 ONLY token can remain well under a penny and still outpace Dogecoin in a small amount of time (relatively speaking). Popular worldwide, and already up thousands of percent, Shiba token ($Shib) is the first cryptocurrency token to be listed and incentivized on ShibaSwap, our decentralized exchange.</description>
+      <developmentStatus>No info</developmentStatus>
+      <proofType>Not mineable</proofType>
+      <orgStructure>No info</orgStructure>
+      <coin_market_price>0.000029123290704353902$$</coin_market_price>
+      <coin_cap_price>0.0000291395826684$$</coin_cap_price>
+      <coin_market_volume24h>1996834087.07$$</coin_market_volume24h>
+      <coin_cap_volume24h>1080663860.40$$</coin_cap_volume24h>
+    </coin>
+    <coin>
+      <name>Tether</name>
+      <symbol>USDT</symbol>
+      <supply>81064697052.54242</supply>
+      <description>Tether (USDT) is a cryptocurrency with reference to fiat currencies that is issued by Tether Limited Company.
+Using the technology of Blockchain, Tether allows the users to keep, send and receive digital tokens pegged to dollars, euros and yens*.
+
+*1USDT =/= 1USD - according to ToS (Terms-of-service) of Tether Limited Company - Tether tokens are not money, although they are backed by the currency used to purchase them at issuance.</description>
+      <developmentStatus>Working product</developmentStatus>
+      <proofType>Not mineable</proofType>
+      <orgStructure>Centralized</orgStructure>
+      <coin_market_price>1.0004709819362922$$</coin_market_price>
+      <coin_cap_price>1.0020994892077372$$</coin_cap_price>
+      <coin_market_volume24h>56848675949.31$$</coin_market_volume24h>
+      <coin_cap_volume24h>31033102126.38$$</coin_cap_volume24h>
+    </coin>
+  </data>
+</ns0:readCoinResponse>
+</body>
