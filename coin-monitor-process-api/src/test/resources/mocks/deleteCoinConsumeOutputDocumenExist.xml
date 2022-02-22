@@ -1,5 +1,0 @@
-<body>
-<ns0:deleteCoinResponse xmlns:ns0="http://training.mulesoft.com/">
-  <response>document with id='620e1e037de8cc36ef9559be' was deleted</response>
-</ns0:deleteCoinResponse>
-</body>
