@@ -223,7 +223,7 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
-    <flow name="get:\updateCryptos\(id):coin-monitor-process-api-config">
+    <flow name="get:\updateCryptos\(id):coin-monitor-process-api-config" doc:id="e8f83e26-1014-418e-a2a2-c5a84970159f">
 		<flow-ref doc:name="Flow Reference" doc:id="e7d2926c-0ff7-4639-be82-f56b9c0bf463" name="update_sub_slow"/>
     </flow>
 </mule>

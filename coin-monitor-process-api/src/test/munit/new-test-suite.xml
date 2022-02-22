@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="new-test-suite.xml" />
+	<munit:test name="update-successfulTest" doc:id="9db915c4-a31b-4e94-8e38-b9eafb555cd5">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="Mock of Successful response from SOAP" doc:id="9553e74a-3215-4b6e-a9ba-d8642626de32" processor="wsc:consume">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="f5509784-89b9-4577-b696-97aede9bac96" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/soapResponse.xml')]" mediaType="application/xml" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:spy doc:name="Spy" doc:id="6fb0e6ca-2fb4-4e29-94d6-490a23a8188b" processor="vm:consume">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="bc5c97ce-10bb-4569-83ff-d936ce20871a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:before-call>
+					<munit-tools:mock-when doc:name="Mock of HTTP Request in Batch Step" doc:id="80449938-1e74-48b3-b6bf-65e1815de72d" processor="http:request">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="6551e95c-e3d0-44a9-b658-f90688780116" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/requestResponse.json')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+					<munit-tools:mock-when doc:name="Mock of executing returnAllNewDataSubFlow" doc:id="ce4e22df-c202-4dc2-bbb8-2c3b7d9f9357" processor="vm:publish">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="3d130d6c-8425-4931-9ac5-c6a4b03683ec" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-call flow="returnAllNewDataSubFlow" />
+			</munit-tools:mock-when>
+				</munit-tools:before-call>
+				<munit-tools:after-call >
+					<munit-tools:mock-when doc:name="Mock of Consume" doc:id="6ae796d6-2f19-4028-a8fd-91d019f48432" processor="vm:consume">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="bc5c97ce-10bb-4569-83ff-d936ce20871a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/allNewDataResponse.json')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+				</munit-tools:after-call>
+			</munit-tools:spy>
+			<munit-tools:mock-when doc:name="Mock of response from SOAP when updating data" doc:id="c339faab-f8b1-4aaa-9a70-00b34a806eab" processor="wsc:consume">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="6ae5e0bb-ee74-4374-ab4d-420dca1d8fa8" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/soapUpdateResponse.xml')]" mediaType="application/xml" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock of Email Sending" doc:id="12a29c1b-8efb-4d72-9b41-7b8a1e96bb39" processor="email:send">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="781fa466-7575-4624-9b17-bc0b5e06f12f" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<flow-ref doc:name="Flow Reference to GET:/updateCryptos/{id}" doc:id="8a53be0f-5bd0-402a-9ef0-e9fc82ee6cc9" name="get:\updateCryptos\(id):coin-monitor-process-api-config" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:verify-call doc:name="Verify call to final Transform Message" doc:id="06eb5912-34f4-4cd2-ad59-d4427f525e39" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="34322c0f-5835-4988-8c01-87219a1c190d" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="update-failTest" doc:id="1fed8b62-6ddf-44b0-9140-580ae64b32bd">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="Mock of Bad Response from SOAP" doc:id="05d7f234-0a3b-4574-8033-f004fb6fc6e3" processor="wsc:consume" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="f5509784-89b9-4577-b696-97aede9bac96" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/soapBadResponse.xml')]" mediaType="application/xml" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference to GET:/updateCryptos/{id}" doc:id="76205f70-4fd4-414f-b003-c6573cdef1f0" name="get:\updateCryptos\(id):coin-monitor-process-api-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call to Transform Message in Choice" doc:id="b65fcc0f-f05d-438e-981e-e6324b384d1f" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d7cffc6f-4165-4b8e-87a2-bce145d5a973" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>
