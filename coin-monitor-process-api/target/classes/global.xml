@@ -23,9 +23,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	</http:request-config>
 	<os:object-store name="Object_store" doc:name="Object store" doc:id="20763f56-fba3-4492-8ed1-ca9aa37a47bc" config-ref="ObjectStore_Config" />
 	<wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="e199bfcc-a391-453b-8f0b-98320e86ed9c" >
-		<wsc:connection wsdlLocation="${consum.wsdl_location}" service="${consum.service}" port="${consum.port}" address="${consum.address}">
-			<wsc:web-service-security actor="http://schemas.xmlsoap.org/soap/actor/next" />
-		</wsc:connection>
+		<wsc:connection wsdlLocation="http://coin-storage-system-api.us-e2.cloudhub.io/CoinStorageService?wsdl" service="CoinStorageService" port="CoinStorageServiceSOAP" />
 	</wsc:config>
 	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="4d22cde0-7a63-4bad-a763-1c81a8d3cf3e" >
 		<email:smtp-connection host="${emailCreateCoin.host}" port="${emailCreateCoin.port}" user="${emailCreateCoin.user}" password="${emailCreateCoin.password}" >
