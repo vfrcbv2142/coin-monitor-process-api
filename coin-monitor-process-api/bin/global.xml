@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="coin-monitor-process-api-httpListenerConfig">
+        <http:listener-connection host="${httpLc.host}" port="${httpLc.port}" />
+    </http:listener-config>
+    <apikit:config name="coin-monitor-process-api-config" api="coin-monitor-process-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus"/>
+	<http:request-config name="HTTP_Request_configuration_CoinCup" doc:name="HTTP Request configuration" doc:id="bdcfaaf6-70b2-4b40-923c-c8a237b4c740" basePath="${httpRequestCoinCup.base_path}" >
+		<http:request-connection host="${httpRequestCoinCup.host}" port="${httpRequestCoinCup.port}" protocol="${httpRequestCoinCup.protocol}"/>
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration_CoinMarket" doc:name="HTTP Request configuration" doc:id="9474b3ca-13b6-4a71-ba39-34052d0950c1" basePath="${httpRequestCoinMarket.base_path}">
+		<http:request-connection host="${httpRequestCoinMarket.host}" port="${httpRequestCoinMarket.port}" protocol="${httpRequestCoinMarket.protocol}"/>
+	</http:request-config>
+	<os:object-store name="Object_store" doc:name="Object store" doc:id="9729ff72-3fce-4906-a681-24570a9d1da7" config-ref="ObjectStore_Config" />
+	<wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="0e5b7618-2c80-4fb4-9b3e-6ad4096dce88" >
+		<wsc:connection wsdlLocation="${consum.wsdl_location}" service="${consum.service}" port="${consum.port}" address="${consum.address}">
+			<wsc:web-service-security actor="http://schemas.xmlsoap.org/soap/actor/next" />
+		</wsc:connection>
+	</wsc:config>
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="df21f5bd-4928-42ea-9489-13c54e8300bf" >
+		<email:smtp-connection host="${emailCreateCoin.host}" port="${emailCreateCoin.port}" user="${emailCreateCoin.user}" password="${emailCreateCoin.password}" >
+			<email:properties >
+				<email:property key="mail.smtp.starttls.enable" value="true" />
+			</email:properties>
+		</email:smtp-connection>
+	</email:smtp-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="131d1d78-493a-4865-9155-3e8cd799d327" file="config.yaml" />
+	<os:config name="ObjectStore_Config" doc:name="ObjectStore Config" doc:id="ac55428a-6a69-462f-8952-766b2704f7e6" />
+	<configuration doc:name="Configuration" doc:id="284ae437-cb24-42ad-9670-9c5dad95b63e" defaultErrorHandler-ref="globalError_Handler" />
+	<error-handler name="globalError_Handler" doc:id="a98bb745-b073-4d76-b0f9-8bc5f2bd4e2f" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="13103ad7-f678-4c5e-991a-413045e3e768" type="HTTP:BAD_REQUEST">
+			<ee:transform doc:name="400" doc:id="9ba71d03-e16d-44f2-bc42-3588a52a167b" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "statusCode": 400,
+  "errorType": (error.errorType.namespace default"HTTP")++":"
+  	++ (error.errorType.identifier default "BAD REQUEST"),
+  "description": error.description,
+  "date": now()
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+            <on-error-propagate type="APIKIT:BAD_REQUEST">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="400 APIKIT">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "statusCode": 400,
+  "errorType": (error.errorType.namespace default"HTTP")++":"
+  	++ (error.errorType.identifier default "BAD REQUEST"),
+  "description": error.description,
+  "date": now()
+}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="404 APIKIT">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode": 404,
+  	"errorType": (error.errorType.namespace default"HTTP")++":"
+  	++ (error.errorType.identifier default "BAD REQUEST"),
+  	"description": error.description,
+  	"date": now()
+}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="405 APIKIT">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode": 405,
+  	"errorType": (error.errorType.namespace default"HTTP")++":"
+  	++ (error.errorType.identifier default "BAD REQUEST"),
+  	"description": error.description,
+  	"date": now()
+}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[405]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="406 APIKIT">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode": 406,
+  	"errorType": (error.errorType.namespace default"HTTP")++":"
+  	++ (error.errorType.identifier default "BAD REQUEST"),
+  	"description": error.description,
+  	"date": now()
+}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[406]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="415 APIKIT">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode": 415,
+  	"errorType": (error.errorType.namespace default"HTTP")++":"
+  	++ (error.errorType.identifier default "BAD REQUEST"),
+  	"description": error.description,
+  	"date": now()
+}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[415]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd 
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="501 APIKIT">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"statusCode": 400,
+  	"errorType": (error.errorType.namespace default"HTTP")++":"
+  	++ (error.errorType.identifier default "BAD REQUEST"),
+  	"description": error.description,
+  	"date": now()
+}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[501]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="9f66665a-4b0e-4a4f-9641-fa3e926a5636" type="HTTP:UNAUTHORIZED,MULE:COMPOSITE_ROUTING,VALIDATION:NULL">
+			<ee:transform doc:name="401" doc:id="384f7b71-726a-4287-ba94-915116db70aa" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "statusCode": "401",
+  "errorType": (error.errorType.namespace default"HTTP")++":"
+  	++ (error.errorType.identifier default "BAD REQUEST"),
+  "description": error.description,
+  "date": now()
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[401]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="838a78a1-8644-4896-b394-b3a272546a6b" type="HTTP:FORBIDDEN">
+			<ee:transform doc:name="403" doc:id="6c988108-cc97-4d82-8f14-01727371369d" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "statusCode": "403",
+  "errorType": (error.errorType.namespace default"HTTP")++":"
+  	++ (error.errorType.identifier default "BAD REQUEST"),
+  "description": error.description,
+  "date": now()
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[403]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="8c016bf9-717d-4e4f-91f6-712e44201a0b" type="HTTP:TIMEOUT">
+			<ee:transform doc:name="408" doc:id="a64efc1c-1534-455a-a9aa-75e9f8aabba1" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "statusCode": "408",
+  "errorType": (error.errorType.namespace default"HTTP")++":"
+  	++ (error.errorType.identifier default "BAD REQUEST"),
+  "description": error.description,
+  "date": now()
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[408]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c594422c-94cc-4e15-8b71-2fd2418aa55f" type="HTTP:TOO_MANY_REQUESTS">
+			<ee:transform doc:name="429" doc:id="daa3eebc-13d8-4d29-988b-4f1e43465379" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "statusCode": "429",
+  "errorType": (error.errorType.namespace default"HTTP")++":"
+  	++ (error.errorType.identifier default "BAD REQUEST"),
+  "description": error.description,
+  "date": now()
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[429]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="77ab3e3f-b293-43be-9935-a5aab62b2644" type="HTTP:INTERNAL_SERVER_ERROR">
+			<ee:transform doc:name="500" doc:id="2be22cd9-ab38-4a22-b04e-a96d79c252b0" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "statusCode": "500",
+  "errorType": (error.errorType.namespace default"HTTP")++":"
+  	++ (error.errorType.identifier default "BAD REQUEST"),
+  "description": error.description,
+  "date": now()
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="3aa9c8c9-3305-4d6a-9185-54a2006e055b" type="WSC:SOAP_FAULT">
+			<ee:transform doc:name="SOAP excaptions" doc:id="76621805-46e8-4204-abab-ab06a106b10a" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[import * from dw::core::Strings
+output application/json
+---
+{
+    statusCode: substringBefore(substringAfter(error.errorMessage.payload.detail, "<statusCode>"), "</statusCode>"),
+  	errorType: substringBefore(substringAfter(error.errorMessage.payload.detail, "<errorType>"), "</errorType>"),
+  	description: error.description,
+  	date: now()
+    
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[import * from dw::core::Strings
+---
+substringBefore(substringAfter(error.errorMessage.payload.detail, "<statusCode>"), "</statusCode>")]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+	</error-handler>
+</mule>

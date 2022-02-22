@@ -1,5 +1,0 @@
-<body>
-		<ns0:readCoinResponse xmlns:ns0="http://training.mulesoft.com/">
-  			<response>test</response>
-		</ns0:readCoinResponse>
-</body>

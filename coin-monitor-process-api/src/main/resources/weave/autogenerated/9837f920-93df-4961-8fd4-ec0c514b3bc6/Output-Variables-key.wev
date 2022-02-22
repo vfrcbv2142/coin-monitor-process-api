@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_9837f920_93df_4961_8fd4_ec0c514b3bc6_Output_Variables_key = String | Null
+
