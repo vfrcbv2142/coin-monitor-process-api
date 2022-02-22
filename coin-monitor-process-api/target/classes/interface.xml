@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
-    <apikit:config name="coin-monitor-process-api-config" api="resource::4be84b0c-f129-4bb0-bace-870957ae3fd4:coin-monitor-process-api:1.0.6:raml:zip:coin-monitor-process-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="coin-monitor-process-api-main">
         <http:listener path="/api/*" config-ref="coin-monitor-process-api-httpListenerConfig">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -11,9 +10,9 @@
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:router config-ref="coin-monitor-process-api-config" />
+        <apikit:router config-ref="coin-monitor-process-api-config"/>
     </flow>
-    <flow name="coin-monitor-process-api-console" doc:id="aa4c798d-de0e-4e7c-bfc6-ba5682687c03">
+    <flow name="coin-monitor-process-api-console">
         <http:listener path="/console/*" config-ref="coin-monitor-process-api-httpListenerConfig">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
@@ -23,9 +22,9 @@
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:console config-ref="coin-monitor-process-api-config" />
+        <apikit:console config-ref="coin-monitor-process-api-config"/>
     </flow>
-    <flow name="get:\readCryptos\(id):coin-monitor-process-api-config">
+    <flow name="get:\checkCryptosPrice\(id):coin-monitor-process-api-config">
         <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core">
             <ee:variables>
                 <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
@@ -37,66 +36,13 @@
 output application/json
 ---
 {
-  oldDate: "2021-12-29T19:24:19.277Z",
-  newDate: "2021-12-30T19:24:19.277Z",
-  dateDifference: "1 day",
-  data: [
-    {
-      name: "Shiba Inu",
-      symbol: "SHIB",
-      supply: "589735030408322.8",
-      description: "description",
-      developmentStatus: "Working product",
-      proofType: "Proof of work",
-      orgStructure: "Decentralized",
-      coin_market_price_oldPriceUsd: "222222.2314\$",
-      coin_cap_price_oldPriceUsd: "222222.2314\$",
-      coin_market_price_newPriceUsd: "111111.2314\$",
-      coin_cap_price_newPriceUsd: "111111.2314\$",
-      coin_market_price_priceDifference: "111111.0000\$",
-      coin_cap_price_priceDifference: "111111.0000\$",
-      coin_market_volume24h: "5104859759.2521515\$",
-      coin_cap_volume24h: "3938267657.7141727233030099\$"
-    }, 
-    {
-      name: "Binance USD",
-      symbol: "BUSD",
-      supply: "16811371368.229256",
-      description: "description",
-      developmentStatus: "Working product",
-      proofType: "Proof of work",
-      orgStructure: "Decentralized",
-      coin_market_price_oldPriceUsd: "222222.2314\$",
-      coin_cap_price_oldPriceUsd: "222222.2314\$",
-      coin_market_price_newPriceUsd: "111111.2314\$",
-      coin_cap_price_newPriceUsd: "111111.2314\$",
-      coin_market_price_priceDifference: "111111.0000\$",
-      coin_cap_price_priceDifference: "111111.0000\$",
-      coin_market_volume24h: "4886564074.014513\$",
-      coin_cap_volume24h: "1014578206.9609374195744720\$"
-    }
-  ]
+  result: "prices in document with id='620ac2612b9d1665314f5d4a' was updated"
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
-    <flow name="get:\deleteCryptos\(id):coin-monitor-process-api-config">
-        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core">
-            <ee:variables>
-                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-"success"]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
-    <flow name="get:\checkCryptosPrice\(id):coin-monitor-process-api-config" doc:id="381423b4-edaf-4620-a719-2d2aa3b6d5eb">
-		<flow-ref doc:name="Flow Reference" doc:id="e42a4079-3842-4555-8c76-733294ff8d6f" name="checkpricesFlow"/>
+    <flow name="get:\readCryptos\(id):coin-monitor-process-api-config">
+		<flow-ref doc:name="Flow Reference" doc:id="b9c026dd-4b7e-4eff-9a1c-b81a6f46fea1" name="readCryptos"/>
     </flow>
     <flow name="get:\updateCryptos\(id):coin-monitor-process-api-config">
         <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core">
@@ -115,16 +61,10 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="get:\deleteCryptos\(id):coin-monitor-process-api-config">
+		<flow-ref doc:name="deleteCryptosSubFlow" doc:id="c5e9631f-cf68-4e89-9932-634d1b177ab8" name="deleteCryptosSubFlow"/>
+    </flow>
     <flow name="get:\createCryptos:coin-monitor-process-api-config">
-        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  result: "document with id='620ac2612b9d1665314f5d4a' was created"
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="c2a0d49b-c0f3-4b26-935f-8e958f558016" name="getCryptos"/>
     </flow>
 </mule>
