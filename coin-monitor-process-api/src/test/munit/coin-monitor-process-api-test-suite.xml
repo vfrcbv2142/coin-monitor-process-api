@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<munit:config name="coin-monitor-process-api-test-suite.xml" />
+	<munit:test name="getDocumentsAndHashCodeComparisonFlowTest" doc:id="f2c8ca7c-0e59-4046-b6e5-4051198dcc9b" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock OS:RetreiveAllKeys" doc:id="8528c332-7589-4c7f-8870-27343a05025c" processor="os:retrieve-all-keys">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="007a40d9-327e-47b8-ad29-bd58ab3ce839" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/mock-key.json')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:spy doc:name="Spy" doc:id="1ab2fd93-2fce-48ca-8e8c-fca6958c6a4b" processor="logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4db755ca-2c9b-43eb-b4df-8f8efc1ebc52" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="4db755ca-2c9b-43eb-b4df-8f8efc1ebc52" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="4db755ca-2c9b-43eb-b4df-8f8efc1ebc52" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="4db755ca-2c9b-43eb-b4df-8f8efc1ebc52" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="4db755ca-2c9b-43eb-b4df-8f8efc1ebc52" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:before-call >
+					<set-variable value="#[%dw 2.0&#10;ns ns0 http://training.mulesoft.com/&#10;output application/json&#10;---&#10;payload.body.ns0#readCoinResponse.response]" doc:name="vars.response" doc:id="d00bb7ac-852d-42f6-8b2f-0d2c7cd436b0" variableName="response" />
+					<munit-tools:mock-when doc:name="Mock OS:Remove" doc:id="eb3a7099-c094-4545-9167-c723a33d2896" processor="os:remove">
+						<munit-tools:with-attributes >
+							<munit-tools:with-attribute whereValue="35adcacc-8260-4150-b54c-83de11bb7298" attributeName="doc:id" />
+						</munit-tools:with-attributes>
+					</munit-tools:mock-when>
+					<munit-tools:mock-when doc:name="Mock Set Payload" doc:id="7357a8ec-086a-45a1-902e-9a6806e92e84" processor="set-payload">
+						<munit-tools:with-attributes >
+							<munit-tools:with-attribute whereValue="613b2fea-e410-4844-b274-99649db5a52b" attributeName="doc:id" />
+						</munit-tools:with-attributes>
+						<munit-tools:then-return >
+							<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/mock-set-documents-payload.json')]" mediaType="application/json" encoding="UTF-8" />
+						</munit-tools:then-return>
+					</munit-tools:mock-when>
+					<munit-tools:assert-that doc:name="Assert that" doc:id="35ccf3f6-cab5-4bd4-ae6b-affc18e96398" is="#[MunitTools::nullValue()]" expression="#[vars.response]"/>
+					<munit-tools:mock-when doc:name="Mock New Key" doc:id="85687d80-f923-4bba-affe-ec0ad11e478b" processor="batch:step">
+						<munit-tools:with-attributes >
+							<munit-tools:with-attribute whereValue="48845c6c-b46a-42bf-a993-3780e1789f82" attributeName="doc:id" />
+						</munit-tools:with-attributes>
+						<munit-tools:then-return >
+							<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/mock-new-key.json')]" />
+						</munit-tools:then-return>
+					</munit-tools:mock-when>
+					<munit-tools:mock-when doc:name="Mock OS:Retreive" doc:id="84eef1c4-87d8-41a9-b8aa-ccf8a5f987b9" processor="os:retrieve">
+						<munit-tools:with-attributes>
+							<munit-tools:with-attribute whereValue="a659fced-1503-4476-be4f-bccbc4426904" attributeName="doc:id" />
+						</munit-tools:with-attributes>
+						<munit-tools:then-return >
+							<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/mock-hash.json')]" mediaType="application/json" encoding="UTF-8" />
+						</munit-tools:then-return>
+					</munit-tools:mock-when>
+					<munit-tools:mock-when doc:name="Mock VM Publish" doc:id="2d038496-5b91-42bf-9636-e2eed3aa6916" processor="vm:publish">
+						<munit-tools:with-attributes>
+							<munit-tools:with-attribute whereValue="b29f0176-ff2a-4eb6-9a8c-45b2de29e280" attributeName="doc:id" />
+						</munit-tools:with-attributes>
+						<munit-tools:then-return >
+							<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/mock-publish-new.json')]" mediaType="application/json" encoding="UTF-8" />
+						</munit-tools:then-return>
+						<munit-tools:then-call flow="displayAllResults" />
+					</munit-tools:mock-when>
+				</munit-tools:before-call>
+				<munit-tools:after-call >
+					<munit-tools:assert-that doc:name="Assert that PayloadNotNull" doc:id="364c0bd9-37d5-4b1e-95cc-ec2276e24277" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+					<munit-tools:queue doc:name="Queue results" doc:id="cc5262df-1fac-45e8-be5a-b71181acdd95" queueName="results" />
+				</munit-tools:after-call>
+			</munit-tools:spy>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to getDocumentsAndHashCodeComparison" doc:id="e2800cc3-b816-4104-bfaa-8d9729f48b5a" name="getDocumentsAndHashCodeComparison"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:sleep time="30" doc:name="Sleep" doc:id="3c6604b7-2731-4ef7-83b2-222df6feafcc" timeUnit="SECONDS"/>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="e30a17a9-b25b-461e-a399-914336bcdf1d" processor="logger" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="981e12c2-9af5-4ad7-8dc4-d5bd939153e3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="de768b24-9b9b-4153-88ab-aed385ddd209" processor="logger" atLeast="#[1]">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4db755ca-2c9b-43eb-b4df-8f8efc1ebc52" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="getDocumentsAndHashCodeComparisonFlowTest_1" doc:id="f22697bc-cb25-471e-8c99-237fede0cc5f" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock OS:RetreiveAllKeys" doc:id="ce2ee66b-461c-4605-a9d8-13c29d28529d" processor="os:retrieve-all-keys" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="007a40d9-327e-47b8-ad29-bd58ab3ce839" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/mock-real-key.json')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:spy doc:name="Spy" doc:id="cf26da35-b2d0-44df-a280-5346af2fdb11" processor="logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4db755ca-2c9b-43eb-b4df-8f8efc1ebc52" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:before-call >
+					<set-variable value="#[%dw 2.0&#10;ns ns0 http://training.mulesoft.com/&#10;output application/json&#10;---&#10;payload.body.ns0#readCoinResponse.response]" doc:name="vars.response" doc:id="5ad7ad0a-23fb-4149-a029-2bcf243d22ad" variableName="response" />
+					<munit-tools:mock-when doc:name="Mock OS:Remove" doc:id="1e63d88a-6d79-464f-bf52-156288a14f92" processor="os:remove" >
+						<munit-tools:with-attributes >
+							<munit-tools:with-attribute whereValue="35adcacc-8260-4150-b54c-83de11bb7298" attributeName="doc:id" />
+							<munit-tools:with-attribute whereValue="35adcacc-8260-4150-b54c-83de11bb7298" attributeName="doc:id" />
+						</munit-tools:with-attributes>
+					</munit-tools:mock-when>
+					<munit-tools:mock-when doc:name="Mock Set Payload" doc:id="06352b41-0b07-4020-b056-9ea9b3da1b10" processor="set-payload" >
+						<munit-tools:with-attributes >
+							<munit-tools:with-attribute whereValue="613b2fea-e410-4844-b274-99649db5a52b" attributeName="doc:id" />
+						</munit-tools:with-attributes>
+						<munit-tools:then-return >
+							<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/mock-set-documents-payload.json')]" mediaType="application/json" encoding="UTF-8" />
+						</munit-tools:then-return>
+					</munit-tools:mock-when>
+					<munit-tools:assert-that doc:name="Assert that" doc:id="7e94a6de-6c5d-48b4-a831-b1e19e6f29af" is="#[MunitTools::nullValue()]" expression="#[vars.response]" />
+					<munit-tools:mock-when doc:name="Mock New Key" doc:id="663ea75d-928e-4c32-ad95-5ca4bb8fe51f" processor="batch:step" >
+						<munit-tools:with-attributes >
+							<munit-tools:with-attribute whereValue="48845c6c-b46a-42bf-a993-3780e1789f82" attributeName="doc:id" />
+						</munit-tools:with-attributes>
+						<munit-tools:then-return >
+							<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/mock-new-key.json')]" />
+						</munit-tools:then-return>
+					</munit-tools:mock-when>
+					<munit-tools:mock-when doc:name="Mock OS:Retreive" doc:id="da76bbdb-0fec-46a0-800f-3487d313ae48" processor="os:retrieve" >
+						<munit-tools:with-attributes >
+							<munit-tools:with-attribute whereValue="a659fced-1503-4476-be4f-bccbc4426904" attributeName="doc:id" />
+						</munit-tools:with-attributes>
+						<munit-tools:then-return >
+							<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/mock-hash.json')]" mediaType="application/json" encoding="UTF-8" />
+						</munit-tools:then-return>
+					</munit-tools:mock-when>
+					<munit-tools:mock-when doc:name="Mock HashesNotEqual" doc:id="d232bcb5-7266-4f61-8de6-54768b627874" processor="logger">
+						<munit-tools:with-attributes >
+							<munit-tools:with-attribute whereValue="125f7939-2649-4345-99da-56970dc7c03a" attributeName="doc:id" />
+						</munit-tools:with-attributes>
+						<munit-tools:then-return >
+							<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/mock-equal-hash.json')]" mediaType="application/json" encoding="UTF-8" />
+						</munit-tools:then-return>
+					</munit-tools:mock-when>
+					<munit-tools:mock-when doc:name="Mock VM Publish" doc:id="3417c62b-626b-41b6-802d-55cad7d45b13" processor="vm:publish" >
+						<munit-tools:with-attributes >
+							<munit-tools:with-attribute whereValue="b29f0176-ff2a-4eb6-9a8c-45b2de29e280" attributeName="doc:id" />
+						</munit-tools:with-attributes>
+						<munit-tools:then-return >
+							<munit-tools:payload value="#[MunitTools::getResourceAsStream('mocks/mock-publish-new.json')]" mediaType="application/json" encoding="UTF-8" />
+						</munit-tools:then-return>
+						
+						<munit-tools:then-call flow="displayAllResults" />
+					</munit-tools:mock-when>
+				</munit-tools:before-call>
+				<munit-tools:after-call >
+					<munit-tools:assert-that doc:name="Assert that PayloadNotNull" doc:id="20fa3184-bc92-4676-9857-7c32be1a4915" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+					<munit-tools:queue doc:name="Queue results" doc:id="2f41a4b3-e966-4702-bb02-5d0a035a2b8a" queueName="results" />
+				</munit-tools:after-call>
+			</munit-tools:spy>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to getDocumentsAndHashCodeComparison" doc:id="4bb1af5e-48ad-44e1-994b-dbd9bfc5f02a" name="getDocumentsAndHashCodeComparison"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:sleep time="30" doc:name="Sleep" doc:id="7da5c422-6fb6-4d05-9ba4-3f0b484802a8" timeUnit="SECONDS"/>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="5e8dc254-f0fc-4e58-ad6c-be2f642d814a" processor="logger" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="981e12c2-9af5-4ad7-8dc4-d5bd939153e3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="600314f1-9c6a-474c-b0c5-18b80e0eeda7" processor="logger" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4db755ca-2c9b-43eb-b4df-8f8efc1ebc52" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="diplayAllResultsFlowFirstBranchTest" doc:id="9f55618c-43a4-4760-ab6b-a9954eeda2f6">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock the First Branch of CHOICE Processor" doc:id="22ae88a7-de30-4d98-848e-4c59b700fa5b" processor="choice">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="da0fc094-b8d6-4a5a-8cfb-abdf9e891fb7" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<set-payload value='#[{&#10;    "key": "6213563f6ed7180ffc97bc9a",&#10;    "hashCode": -1215851743,&#10;    "date": {&#10;      "date": "2022-02-21T09:07:10.893Z"&#10;    },&#10;    "time": "PT14H33M26.043S",&#10;    "timeDifference": "0 days, 14 hours, 33 minutes, 52 seconds",&#10;    "data": [&#10;      {&#10;        "name": "Avalanche",&#10;        "symbol": "AVAX",&#10;        "supply": 395891289.9134107,&#10;        "cmPrice": 80.9975335176955,&#10;        "ccPrice": 81.0056840379986554,&#10;        "cmVolume24h": 1052081559.19,&#10;        "ccVolume24h": 667157121.18&#10;      },&#10;      {&#10;        "name": "Shiba Inu",&#10;        "symbol": "SHIB",&#10;        "supply": 589735030408322.8,&#10;        "cmPrice": 0.000027077726384828018,&#10;        "ccPrice": 0.0000270200618970,&#10;        "cmVolume24h": 1270419038.96,&#10;        "ccVolume24h": 715224820.91&#10;      },&#10;      {&#10;        "name": "Binance USD",&#10;        "symbol": "BUSD",&#10;        "supply": 18110422295.209255,&#10;        "cmPrice": 0.9992328342096831,&#10;        "ccPrice": 1.0015401646719965,&#10;        "cmVolume24h": 3654685334.13,&#10;        "ccVolume24h": 486561953.99&#10;      },&#10;      {&#10;        "name": "Ethereum",&#10;        "symbol": "ETH",&#10;        "supply": 119669196.624,&#10;        "cmPrice": 2719.8503147911947,&#10;        "ccPrice": 2722.3667223926556202,&#10;        "cmVolume24h": 11744657696.97,&#10;        "ccVolume24h": 7588075309.59&#10;      },&#10;      {&#10;        "name": "Bitcoin",&#10;        "symbol": "BTC",&#10;        "supply": 18964275,&#10;        "cmPrice": 39029.98100305944,&#10;        "ccPrice": 39061.3415863661169086,&#10;        "cmVolume24h": 18498642939.52,&#10;        "ccVolume24h": 8809967725.27&#10;      },&#10;      {&#10;        "name": "Tether",&#10;        "symbol": "USDT",&#10;        "supply": 81064697052.53387,&#10;        "cmPrice": 1.000478244794607,&#10;        "ccPrice": 1.0021894803169144,&#10;        "cmVolume24h": 45973942823.52,&#10;        "ccVolume24h": 23001102403.64&#10;      }&#10;    ]&#10;}]' doc:name="INPUT Data" doc:id="fe4b1fa2-3b70-4a82-b5aa-2b2beee67c68" />
+			<flow-ref doc:name="Flow-ref on displayAllResults" doc:id="3aa88e3e-7726-4435-b61a-0133f59216cb" name="displayAllResults" target="results"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that PayloadNotNull" doc:id="da1b329a-d75f-409b-a98a-1b7ad3a7ec05" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+			<munit-tools:verify-call doc:name="Verify call to Logger" doc:id="464a9410-2f03-4d08-a285-2e91591e4b24" processor="logger" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="aedfc229-9f6f-421d-9e5c-4ba2d179c029" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="aedfc229-9f6f-421d-9e5c-4ba2d179c029" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="diplayAllResultsFlowSecondBranchTest" doc:id="d692a767-d1c6-4482-89a4-f8c4e0c3d372">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock Second Branch of CHOICE Processor" doc:id="3fb8ba58-c606-41e8-8c26-8514f851065d" processor="choice">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="da0fc094-b8d6-4a5a-8cfb-abdf9e891fb7" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<set-payload value='#[{&#10;    "key": "620e9db6515c5a0be4a5a616",&#10;    "hashCode": -1002182777,&#10;    "date": {&#10;      "newDate": "2022-02-17T19:10:46.475Z"&#10;    },&#10;    "time": "PT103H1M54.55S",&#10;    "timeDifference": "4 days, 7 hours, 1 minutes, 37 seconds",&#10;    "data": [&#10;      {&#10;        "name": "Avalanche",&#10;        "symbol": "AVAX",&#10;        "supply": 395891289.9134107,&#10;        "description": "Avalanche is an open-source platform for launching decentralized finance applications and enterprise blockchain deployments in one interoperable, highly scalable ecosystem. Developers who build on Avalanche can easily create powerful, reliable, and secure applications and custom blockchain networks with complex rulesets or build on existing private or public subnets. Avalanche gives you complete control on both the network and application layers–helping you build anything you can imagine.",&#10;        "dStatus": "Working product",&#10;        "proofT": "Proof of Stake",&#10;        "orgStr": "Semi-centralized",&#10;		"cmOldPrice": 88.71152787449873,&#10;        "cmNewPrice": 88.70052787449873,&#10;		"ccOldPrice": 88.6321459544222286,&#10;        "ccNewPrice": 88.6382959544222286,&#10;		"priceDifference": 0.01234554,&#10;        "cmVolume24h": 1798528090.95,&#10;        "ccVolume24h": 1084164553.31&#10;      },&#10;      {&#10;        "name": "Binance USD",&#10;        "symbol": "BUSD",&#10;        "supply": 17795128019.589256,&#10;        "dStatus": "Only token",&#10;        "proofT": "Not mineable",&#10;        "orgStr": "Centralized",&#10;		"cmOldPrice": 1.00169458092266,&#10;        "cmNewPrice": 1.00069458092266,&#10;		"ccOldPrice": 1.0113918800668469,&#10;        "ccNewPrice": 1.0013918800668469,&#10;		"priceDifference": 0.01234554,&#10;        "cmVolume24h": 4488921986.88,&#10;        "ccVolume24h": 561785247.99&#10;      }&#10;    ]&#10; }]' doc:name="INPUT Data" doc:id="eb36a8d0-e7a3-45a7-8c23-bdd3e3a1d90a" />
+				<flow-ref doc:name="Flow-ref on displayAllResults" doc:id="72554c8f-8932-4730-8f8b-7aa026420122" name="displayAllResults" target="results" />
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-that doc:name="Assert that PayloadNotNull" doc:id="4874c9b9-d704-4a6a-82e2-d115215f4a49" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+				<munit-tools:verify-call doc:name="Verify call to Logger" doc:id="f3dcbfc1-259b-4600-8681-796a81d550de" processor="logger" atLeast="1">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="aedfc229-9f6f-421d-9e5c-4ba2d179c029" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="aedfc229-9f6f-421d-9e5c-4ba2d179c029" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				</munit-tools:verify-call>
+			</munit:validation>
+		</munit:test>
+	<munit:test name="diplayAllResultsFlowThirdBranchTest" doc:id="891b254d-d4e5-4a9b-8e61-d48297539736">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock the Third Branch of CHOICE Processor" doc:id="a7b15fc9-254d-481b-a141-4d8dde752987" processor="choice">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="da0fc094-b8d6-4a5a-8cfb-abdf9e891fb7" attributeName="doc:id" />
+					</munit-tools:with-attributes>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<set-payload value='#[{&#10;    "key": "620e9db6515c5a0be4a5a616",&#10;    "hashCode": -1002182777,&#10;    //"date": {&#10;     // "newDate": "2022-02-17T19:10:46.475Z"&#10;    //},&#10;    "time": "PT103H1M54.55S",&#10;    "timeDifference": "4 days, 7 hours, 1 minutes, 37 seconds",&#10;    "data": [&#10;      {&#10;        "name": "Avalanche",&#10;        "symbol": "AVAX",&#10;        "supply": 395891289.9134107,&#10;        "description": "Avalanche is an open-source platform for launching decentralized finance applications and enterprise blockchain deployments in one interoperable, highly scalable ecosystem. Developers who build on Avalanche can easily create powerful, reliable, and secure applications and custom blockchain networks with complex rulesets or build on existing private or public subnets. Avalanche gives you complete control on both the network and application layers–helping you build anything you can imagine.",&#10;        "dStatus": "Working product",&#10;        "proofT": "Proof of Stake",&#10;        "orgStr": "Semi-centralized",&#10;		"cmOldPrice": 88.71152787449873,&#10;        "cmNewPrice": 88.70052787449873,&#10;		"ccOldPrice": 88.6321459544222286,&#10;        "ccNewPrice": 88.6382959544222286,&#10;		"priceDifference": 0.01234554,&#10;        "cmVolume24h": 1798528090.95,&#10;        "ccVolume24h": 1084164553.31&#10;      },&#10;      {&#10;        "name": "Binance USD",&#10;        "symbol": "BUSD",&#10;        "supply": 17795128019.589256,&#10;        "dStatus": "Only token",&#10;        "proofT": "Not mineable",&#10;        "orgStr": "Centralized",&#10;		"cmOldPrice": 1.00169458092266,&#10;        "cmNewPrice": 1.00069458092266,&#10;		"ccOldPrice": 1.0113918800668469,&#10;        "ccNewPrice": 1.0013918800668469,&#10;		"priceDifference": 0.01234554,&#10;        "cmVolume24h": 4488921986.88,&#10;        "ccVolume24h": 561785247.99&#10;      }&#10;    ]&#10; }]' doc:name="INPUT Data" doc:id="abcd0d19-29c9-4d85-9b3e-0b72f738426b" />
+				<flow-ref doc:name="Flow-ref on displayAllResults" doc:id="38460304-0b14-42d3-96be-526a60dbd5ce" name="displayAllResults" target="results" />
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-that doc:name="Assert that PayloadNotNull" doc:id="113572b1-52be-49ba-bd05-18d54f134d15" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+				<munit-tools:verify-call doc:name="Verify call to Logger" doc:id="18d1bb41-ccac-4c0a-9b3b-3a97ae8bedbc" processor="logger" atLeast="1">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="aedfc229-9f6f-421d-9e5c-4ba2d179c029" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="aedfc229-9f6f-421d-9e5c-4ba2d179c029" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				</munit-tools:verify-call>
+			</munit:validation>
+		</munit:test>
+	<munit:test name="coin-monitor-process-api-test-suiteTest" doc:id="99f48f17-876a-4c99-888e-cb47c9247706" expectedErrorType="OS:KEY_NOT_FOUND">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock ObjectStore Errors" doc:id="05fa204a-e801-4f09-bd94-2be26460f759" processor="os:retrieve-all-keys">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="007a40d9-327e-47b8-ad29-bd58ab3ce839" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="OS:KEY_NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="a27f4237-df44-4ba7-83c1-b0c0825c7e16" name="getDocumentsAndHashCodeComparison"/>
+		</munit:execution>
+	</munit:test>
+
+
+</mule>

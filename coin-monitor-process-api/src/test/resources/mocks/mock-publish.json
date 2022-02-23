@@ -1,0 +1,65 @@
+{
+    "key": "6213569c6ed7180ffc97bc9b",
+    "hashCode": 618216646,
+    "date": {
+      "date": "2022-02-21T09:08:44.144Z"
+    },
+    "time": "PT30H41M24.985S",
+    "timeDifference": "1 days, 6 hours, 41 minutes, 11 seconds",
+    "data": [
+      {
+        "name": "Avalanche",
+        "symbol": "AVAX",
+        "supply": 395891289.9134107,
+        "cmPrice": 80.82419818470727,
+        "ccPrice": 81.0488811285844079,
+        "cmVolume24h": 1051229880.98,
+        "ccVolume24h": 663657307.94
+      },
+      {
+        "name": "Shiba Inu",
+        "symbol": "SHIB",
+        "supply": 589735030408322.8,
+        "cmPrice": 0.000026950096709808918,
+        "ccPrice": 0.0000270239148123,
+        "cmVolume24h": 1267091624.59,
+        "ccVolume24h": 714879360.60
+      },
+      {
+        "name": "Binance USD",
+        "symbol": "BUSD",
+        "supply": 18110422295.209255,
+        "cmPrice": 0.9995115783863378,
+        "ccPrice": 1.0018707699282425,
+        "cmVolume24h": 3640734650.75,
+        "ccVolume24h": 486216466.41
+      },
+      {
+        "name": "Ethereum",
+        "symbol": "ETH",
+        "supply": 119669196.624,
+        "cmPrice": 2717.894023952356,
+        "ccPrice": 2723.5619627430104222,
+        "cmVolume24h": 11704748226.76,
+        "ccVolume24h": 7574320413.41
+      },
+      {
+        "name": "Bitcoin",
+        "symbol": "BTC",
+        "supply": 18964275,
+        "cmPrice": 38989.99223702228,
+        "ccPrice": 39065.6911122968315867,
+        "cmVolume24h": 18414659857.43,
+        "ccVolume24h": 8789645107.10
+      },
+      {
+        "name": "Tether",
+        "symbol": "USDT",
+        "supply": 81064697052.53387,
+        "cmPrice": 1.0004618589705636,
+        "ccPrice": 1.0025133710733036,
+        "cmVolume24h": 45827054070.91,
+        "ccVolume24h": 22973578776.38
+      }
+    ]
+ }

@@ -1,5 +1,349 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+	<flow name="getDocumentsAndHashCodeComparison" doc:id="d0890d86-55f7-49a4-bfcf-ff19e4aea846">
+		<scheduler doc:name="Scheduler" doc:id="794507bb-64e9-43ac-806d-54ed0e40dc1d" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="1" timeUnit="MINUTES"/>
+			</scheduling-strategy>
+		</scheduler>
+		<os:retrieve-all-keys doc:name="Retrieve all Keys from ObjectStore" doc:id="007a40d9-327e-47b8-ad29-bd58ab3ce839" objectStore="Object_Store_Configuration"/>
+		<batch:job jobName="processingDocumentsAndHashCode" doc:id="16b38a9b-26b0-4291-b04b-3dfcf706d544" maxFailedRecords="10">
+			<batch:process-records >
+				<batch:step name="gettingDocumentsByKeys" doc:id="9bc877cd-c5b5-41ca-b187-bd21b99b7294" >
+					<set-variable value="#[payload]" doc:name="Set Key" doc:id="3d0d8def-33c0-4997-b4f4-59d3ca67362b" variableName="key"/>
+					<wsc:consume doc:name="GET / Documents from SOAP and DB" doc:id="550b0a37-32b7-4ef9-bf78-83328e5e7360" operation="${readCoin.operation}" config-ref="Web_Service_Consumer_Configuration">
+						<wsc:message >
+							<wsc:body ><![CDATA[#[null]]]></wsc:body>
+							<wsc:headers ><![CDATA[#[%dw 2.0
+output application/xml
+ns ns0 http://training.mulesoft.com/
+  ---
+  "headers": {
+    ns0#readCoinHeader:{
+      documentID: vars.key
+      }
+  }]]]></wsc:headers>
+						</wsc:message>
+					</wsc:consume>
+					<ee:transform doc:name="XML to JSON" doc:id="d5ae48cb-3869-4167-b983-a2029aef66e7" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+ns ns0 http://training.mulesoft.com/
+output application/json
+---
+{
+  //response: payload.body.ns0#readCoinResponse.response,
+  (oldDate: payload.body.ns0#readCoinResponse.oldDate) if (payload.body.ns0#readCoinResponse.oldDate != null),
+  (newDate: payload.body.ns0#readCoinResponse.newDate) if (payload.body.ns0#readCoinResponse.newDate != null),
+  (dateDifference: payload.body.ns0#readCoinResponse.dateDifference) if (payload.body.ns0#readCoinResponse.dateDifference != null),
+  (date: payload.body.ns0#readCoinResponse.date) if (payload.body.ns0#readCoinResponse.date != null),
+  data: payload.body.ns0#readCoinResponse.data.*coin map (object, index) -> {
+    name: object.name,
+    symbol: object.symbol,
+    supply: object.supply,
+    (description: object.description) if (object.description != null),
+    (developmentStatus: object.developmentStatus) if (object.developmentStatus != null),
+    (proofType: object.proofType) if (object.proofType != null),
+    (orgStructure: object.orgStructure) if (object.orgStructure != null),
+    (coin_market_oldPriceUSD: object.'coin_market_oldPriceUSD') if (object.'coin_market_oldPriceUSD' != null),
+    (coin_cap_oldPriceUSD: object.'coin_cap_oldPriceUSD') if (object.'coin_cap_oldPriceUSD' != null),
+    (coin_market_newPriceUSD: object.'coin_market_newPriceUSD') if (object.'coin_market_newPriceUSD' != null),
+    (coin_cap_newPriceUSD: object.'coin_cap_newPriceUSD') if (object.'coin_cap_newPriceUSD' != null),
+    (coin_market_priceDifference: object.'coin_market_priceDifference') if (object.'coin_market_priceDifference' != null),
+    (coin_cap_newPriceUSD: object.'coin_cap_priceDifference') if (object.'coin_cap_priceDifference' != null),
+    (coin_market_price: object.'coin_market_price') if (object.'coin_market_price' != null),
+    (coin_cap_price: object.'coin_cap_price') if (object.'coin_cap_price' != null),
+    coin_market_volume24h: object.'coin_market_volume24h',
+    coin_cap_volume24h: object.'coin_cap_volume24h'
+  }
+}]]></ee:set-payload>
+						</ee:message>
+						<ee:variables >
+							<ee:set-variable variableName="response" ><![CDATA[%dw 2.0
+ns ns0 http://training.mulesoft.com/
+output application/json
+---
+
+payload.body.ns0#readCoinResponse.response
+]]></ee:set-variable>
+							<ee:set-variable variableName="payloadData" ><![CDATA[%dw 2.0
+ns ns0 http://training.mulesoft.com/
+output application/json
+---
+{
+  //response: payload.body.ns0#readCoinResponse.response,
+  (oldDate: payload.body.ns0#readCoinResponse.oldDate) if (payload.body.ns0#readCoinResponse.oldDate != null),
+  (newDate: payload.body.ns0#readCoinResponse.newDate) if (payload.body.ns0#readCoinResponse.newDate != null),
+  (dateDifference: payload.body.ns0#readCoinResponse.dateDifference) if (payload.body.ns0#readCoinResponse.dateDifference != null),
+  (date: payload.body.ns0#readCoinResponse.date) if (payload.body.ns0#readCoinResponse.date != null),
+  data: payload.body.ns0#readCoinResponse.data.*coin map (object, index) -> {
+    name: object.name,
+    symbol: object.symbol,
+    supply: object.supply,
+    (description: object.description) if (object.description != null),
+    (developmentStatus: object.developmentStatus) if (object.developmentStatus != null),
+    (proofType: object.proofType) if (object.proofType != null),
+    (orgStructure: object.orgStructure) if (object.orgStructure != null),
+    (coin_market_oldPriceUSD: object.'coin_market_oldPriceUSD') if (object.'coin_market_oldPriceUSD' != null),
+    (coin_cap_oldPriceUSD: object.'coin_cap_oldPriceUSD') if (object.'coin_cap_oldPriceUSD' != null),
+    (coin_market_newPriceUSD: object.'coin_market_newPriceUSD') if (object.'coin_market_newPriceUSD' != null),
+    (coin_cap_newPriceUSD: object.'coin_cap_newPriceUSD') if (object.'coin_cap_newPriceUSD' != null),
+    (coin_market_priceDifference: object.'coin_market_priceDifference') if (object.'coin_market_priceDifference' != null),
+    (coin_cap_newPriceUSD: object.'coin_cap_priceDifference') if (object.'coin_cap_priceDifference' != null),
+    (coin_market_price: object.'coin_market_price') if (object.'coin_market_price' != null),
+    (coin_cap_price: object.'coin_cap_price') if (object.'coin_cap_price' != null),
+    coin_market_volume24h: object.'coin_market_volume24h',
+    coin_cap_volume24h: object.'coin_cap_volume24h'
+  }
+}]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+				</batch:step>
+				<batch:step name="emptyKeysEliminationSTRINGStep" doc:id="fcda0807-4f63-497d-a27b-34b2e0fd5d45" acceptExpression="#[vars.response != null]">
+					<ee:transform doc:name="Getting the Key from XML Response" doc:id="e2cc6f30-2b73-40f6-8b66-b64d24d01110" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[import * from dw::core::Strings
+output application/json
+---
+{
+	(keyToRemove: substringBefore(substringAfter(vars.response, "'"), "'")) if (payload != null) 
+}
+]]></ee:set-payload>
+						</ee:message>
+						<ee:variables >
+							<ee:set-variable variableName="delete" ><![CDATA[import * from dw::core::Strings
+output application/json
+---
+{
+	(keyToRemove: substringBefore(substringAfter(vars.response, "'"), "'")) if (payload != null) 
+}
+]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+					<os:remove doc:name="Remove Empty Keys from ObjectStore" doc:id="35adcacc-8260-4150-b54c-83de11bb7298" key="#[payload.keyToRemove]" objectStore="Object_Store_Configuration"/>
+					<ee:transform doc:name="Message about Removal" doc:id="0621ae34-d32b-49d4-90bf-c328b49a613f">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "The key with id=" ++ vars.delete.keyToRemove as String ++  " does not correspond to any Document in the DB.\nThus, it has been successfully removed from the ObjectStore"
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<logger level="INFO" doc:name="Display Message" doc:id="55a35213-e7d7-45b9-af7b-9cba2d31e28f" message="#[payload]" />
+					<set-payload value="#[vars.payloadData]" doc:name="Set Documents as Payload" doc:id="613b2fea-e410-4844-b274-99649db5a52b" />
+				</batch:step>
+				<batch:step name="filterObjectsAndHashCodeOperationsOBJECTStep" doc:id="48845c6c-b46a-42bf-a993-3780e1789f82" acceptExpression="#[vars.response == null]">
+					<ee:transform doc:name="HashCode Calculation" doc:id="7800cc68-8957-4abe-883e-0fbc16f1dadf" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"key": vars.key,
+	"hashCode": java!com::currency::CryptoCurrency::getHashCode(payload),
+	"document": payload
+}]]></ee:set-payload>
+						</ee:message>
+						<ee:variables >
+							<ee:set-variable variableName="hashData" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"key": vars.key,
+	"hashCode": java!com::currency::CryptoCurrency::getHashCode(payload),
+	"document": payload
+}]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+					<os:retrieve doc:name="Retrieve HashCode" doc:id="a659fced-1503-4476-be4f-bccbc4426904" key="#[payload.key]" objectStore="Object_Store_Configuration">
+						<os:default-value ><![CDATA[0]]></os:default-value>
+					</os:retrieve>
+					<ee:transform doc:name="HashCode Comparison" doc:id="de77d8d8-035b-4b9e-aefe-5cec2844e116" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"key": vars.hashData.key,
+	"hashCodeCalculated": vars.hashData.hashCode,
+	"hashCodeFromOObjectStore": payload,
+	"equalHashCodes": vars.hashData.hashCode == payload,
+	"document": vars.hashData.document
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</batch:step>
+				<batch:step name="differentHashCodesFormatResultStep" doc:id="b42cf170-c41c-4057-8a1a-2ec05ac051ae" acceptExpression="#[payload.equalHashCodes == false]">
+					<ee:transform doc:name="Data Unification" doc:id="a0a778ce-5589-423b-ab05-b625be72afad" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+import substring from dw::core::Strings
+import unifyTime from modules::unifyTime
+import unifyData from modules::unifyData
+import unifyDate from modules::unifyDate
+
+output application/json
+
+fun timeDiff(obj) = do {
+	var timeDifference = unifyTime(obj).days as String ++ " days, " 
+				++ unifyTime(obj).hours as String ++ " hours, " 
+                ++ unifyTime(obj).minutes as String ++ " minutes, " 
+                ++ substring((unifyTime(obj).seconds as String), 0, 2) 
+                ++ " seconds"
+    ---
+    timeDifference
+}
+---
+{
+	"key": payload.key,
+	"hashCode": payload.hashCodeCalculated,
+    "date": unifyDate(payload.document),
+    "time": unifyTime(payload.document),
+    "timeDifference": timeDiff(payload.document),
+    "data": unifyData(payload.document)
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<batch:aggregator doc:name="Batch Aggregator" doc:id="f02c1aa7-94c0-4f83-bd46-e14a40488e5e" streaming="true" preserveMimeTypes="true">
+						<ee:transform doc:name="Storing Results" doc:id="ea1768a2-c9f9-4cc9-835e-7dc216506e05" >
+							<ee:message >
+								<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+						<foreach doc:name="For Each" doc:id="5163e428-6648-45d0-aab2-ef255ba773b5" >
+							<vm:publish queueName="${vm.queueName}" doc:name="Publish Results" doc:id="b29f0176-ff2a-4eb6-9a8c-45b2de29e280" config-ref="VM_Configuration"/>
+						</foreach>
+					</batch:aggregator>
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete>
+				<logger level="INFO" doc:name="Logger" doc:id="981e12c2-9af5-4ad7-8dc4-d5bd939153e3" />
+			</batch:on-complete>
+		</batch:job>
+		<logger level="INFO" doc:name="Logger" doc:id="4db755ca-2c9b-43eb-b4df-8f8efc1ebc52" message="Batch Job complited"/>
+	</flow>
+	<flow name="displayAllResults" doc:id="8f9606ec-6723-40b1-ab51-487178df3f0a">
+		<vm:listener queueName="${vm.queueName}" doc:name="GET / Results" doc:id="faf1d243-1051-4453-95a4-15c149250f9c" config-ref="VM_Configuration"/>
+		<choice doc:name="Choice" doc:id="da0fc094-b8d6-4a5a-8cfb-abdf9e891fb7" >
+			<when expression='#[(keysOf(payload.date) map $ as String) contains "date"]' >
+				<ee:transform doc:name="Results Calculations" doc:id="b0d5c362-9c58-4eb2-a168-c6fd7528a8fc" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+import trimStringOfDigits from modules::trimString
+
+output application/json
+---
+{
+	"numberOfCryptoCurrencies": sizeOf(payload.data),
+	"documentLifetime": payload.timeDifference,
+	"cryptoCurrenciesNames": payload.data.name,
+	"theMostExpenciveCoin(coin-market)": (payload.data orderBy $.cmPrice)[-1].name,
+	"theMostExpenciveCoin(coin-cap)": (payload.data orderBy $.ccPrice)[-1].name,
+	"theMostExpenciveCoin(coin-market)Price": ((payload.data orderBy $.cmPrice)[-1].cmPrice) as String ++ " \$",
+	"theMostExpenciveCoin(coin-cap)Price": ((payload.data orderBy $.ccPrice)[-1].ccPrice) as String ++ " \$",
+	"priceDifferenceBetweenSourses": trimStringOfDigits(((abs(((payload.data orderBy $.cmPrice)[-1].cmPrice) - (payload.data orderBy $.ccPrice)[-1].ccPrice)) as String), 7) ++ " \$",
+	"theCheapestCoin(coin-market)": (payload.data orderBy $.cmPrice)[0].name,
+	"theCheapestCoin(coin-cap)": (payload.data orderBy $.ccPrice)[0].name,
+	"theCheapestCoin(coin-market)Price": ((payload.data orderBy $.cmPrice)[0].cmPrice) as String ++ " \$",
+	"theCheapestCoin(coin-cap)Price": ((payload.data orderBy $.ccPrice)[0].ccPrice) as String ++ " \$",
+	"priceDifferenceBetweenSourses": ((abs(((payload.data orderBy $.cmPrice)[0].cmPrice) - (payload.data orderBy $.ccPrice)[0].ccPrice)) as String) ++ " \$",
+    "avgAllCoinsPrices(coin-market)": trimStringOfDigits((avg(payload.data.*cmPrice) as String), 7) ++ " \$",
+    "avgAllCoinsPrices(coin-cap)": trimStringOfDigits((avg(payload.data.*ccPrice) as String), 7) ++ " \$",
+    "avgOverallPricesDifference": trimStringOfDigits((abs(avg(payload.data.*cmPrice) - avg(payload.data.*ccPrice)) as String), 7) ++ " \$",
+    (if (avg(payload.data.*cmPrice) > avg(payload.data.*ccPrice)) 
+        "moreExpenciveByPricesWebService": "Coin-MARKET"
+    else
+        "moreExpenciveByPricesWebService": "Coin-CAP"
+    ),
+    ("theMostExpenciveCoinDescription": (payload.data orderBy $.ccPrice)[-1].description) if ((payload.data orderBy $.ccPrice)[-1].description != null)
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[(keysOf(payload.date) map $ as String) contains "newDate"]' >
+				<ee:transform doc:name="Results Caclulations" doc:id="970205eb-0926-48ff-9aac-1d387a2e5a9e" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+import trimStringOfDigits from modules::trimString
+output application/json
+---
+{
+	"numberOfCryptoCurrencies": sizeOf(payload.data),
+	"documentLifetime": payload.timeDifference,
+	"CryptoCurrenciesNames": payload.data.name,
+	"theMostExpenciveCoin(coin-market)": (payload.data orderBy $.cmNewPrice)[-1].name,
+	"theMostExpenciveCoin(coin-cap)": (payload.data orderBy $.ccNewPrice)[-1].name,
+	"theMostExpenciveCoin(coin-market)Price": ((payload.data orderBy $.cmNewPrice)[-1].cmNewPrice) as String ++ "\$",
+	"theMostExpenciveCoin(coin-cap)Price": ((payload.data orderBy $.ccNewPrice)[-1].ccNewPrice) as String ++ "\$",
+	"priceDifferenceBetweenSourses": trimStringOfDigits(((abs(((payload.data orderBy $.cmNewPrice)[-1].cmNewPrice) - (payload.data orderBy $.ccNewPrice)[-1].ccNewPrice)) as String), 7) ++ "\$",
+	"theCheapestCoin(coin-market)": (payload.data orderBy $.cmNewPrice)[0].name,
+	"theCheapestCoin(coin-cap)": (payload.data orderBy $.ccNewPrice)[0].name,
+	"theCheapestCoin(coin-market)Price": ((payload.data orderBy $.cmNewPrice)[0].cmNewPrice) as String ++ "\$",
+	"theCheapestCoin(coin-cap)Price": ((payload.data orderBy $.ccNewPrice)[0].ccNewPrice) as String ++ "\$",
+	"priceDifferenceBetweenSourses": ((abs(((payload.data orderBy $.cmNewPrice)[0].cmNewPrice) - (payload.data orderBy $.ccNewPrice)[0].ccNewPrice)) as String) ++ "\$",
+    "avgAllCoinsPrices(coin-market)": trimStringOfDigits((avg(payload.data.*cmNewPrice) as String), 7) ++ "\$",
+    "avgAllCoinsPrices(coin-cap)": trimStringOfDigits((avg(payload.data.*ccNewPrice) as String), 7) ++ "\$",
+    "avgOverallPricesDifference": trimStringOfDigits((abs(avg(payload.data.*cmNewPrice) - avg(payload.data.*ccNewPrice)) as String), 7) ++ "\$",
+    (if (avg(payload.data.*cmNewPrice) > avg(payload.data.*ccNewPrice)) 
+       "moreExpenciveByPricesWebService": "Coin-MARKET"
+    else
+        "moreExpenciveByPricesWebService": "Coin-CAP"
+    ),
+    "theMostExpenciveCoinDescription": (payload.data orderBy $.ccNewPrice)[-1].description
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Results Calculations" doc:id="2e379d58-1c39-4a6b-80a2-2ea567b579ff" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+import trimStringOfDigits from modules::trimString
+output application/json
+---
+{
+	"numberOfCryptoCurrencies": sizeOf(payload.data),
+	"documentLifetime": payload.timeDifference,
+	"CryptoCurrenciesNames": payload.data.name,
+	"theMostExpenciveCoin(coin-market)": (payload.data orderBy $.cmNewPrice)[-1].name,
+	"theMostExpenciveCoin(coin-cap)": (payload.data orderBy $.ccNewPrice)[-1].name,
+	"theMostExpenciveCoin(coin-market)Price": ((payload.data orderBy $.cmNewPrice)[-1].cmNewPrice) as String ++ "\$",
+	"theMostExpenciveCoin(coin-cap)Price": ((payload.data orderBy $.ccNewPrice)[-1].ccNewPrice) as String ++ "\$",
+	"priceDifferenceBetweenSourses": trimStringOfDigits(((abs(((payload.data orderBy $.cmNewPrice)[-1].cmNewPrice) - (payload.data orderBy $.ccNewPrice)[-1].ccNewPrice)) as String), 7) ++ "\$",
+	"theCheapestCoin(coin-market)": (payload.data orderBy $.cmNewPrice)[0].name,
+	"theCheapestCoin(coin-cap)": (payload.data orderBy $.ccNewPrice)[0].name,
+	"theCheapestCoin(coin-market)Price": ((payload.data orderBy $.cmNewPrice)[0].cmNewPrice) as String ++ "\$",
+	"theCheapestCoin(coin-cap)Price": ((payload.data orderBy $.ccNewPrice)[0].ccNewPrice) as String ++ "\$",
+	"priceDifferenceBetweenSourses": ((abs(((payload.data orderBy $.cmNewPrice)[0].cmNewPrice) - (payload.data orderBy $.ccNewPrice)[0].ccNewPrice)) as String) ++ "\$",
+    "avgAllCoinsPrices(coin-market)": trimStringOfDigits((avg(payload.data.*cmNewPrice) as String), 7) ++ "\$",
+    "avgAllCoinsPrices(coin-cap)": trimStringOfDigits((avg(payload.data.*ccNewPrice) as String), 7) ++ "\$",
+    "avgOverallPricesDifference": trimStringOfDigits((abs(avg(payload.data.*cmNewPrice) - avg(payload.data.*ccNewPrice)) as String), 7) ++ "\$",
+    (if (avg(payload.data.*cmNewPrice) > avg(payload.data.*ccNewPrice)) 
+       "moreExpenciveByPricesWebService": "Coin-MARKET"
+    else
+        "moreExpenciveByPricesWebService": "Coin-CAP"
+    ),
+    "theMostExpenciveCoinDescription": (payload.data orderBy $.ccNewPrice)[-1].description
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Display Results" doc:id="c0008b4b-d4ba-4f09-921d-9b2ea91fd7cd" message="#[payload]"/>
+	</flow>
+</mule>

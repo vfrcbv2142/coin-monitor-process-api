@@ -1,0 +1,218 @@
+[
+  {
+    "oldDate": "2022-02-21T08:05:40.274Z",
+    "newDate": "2022-02-21T09:05:40.274Z",
+    "dateDifference": "1 hour",
+    "data": [
+      {
+        "name": "Avalanche",
+        "symbol": "AVAX",
+        "supply": "395891289.9134107",
+        "developmentStatus": "Working product",
+        "proofType": "Proof of Work",
+        "orgStructure": "Decentralized",
+        "description": "AVAX is the new CryptoCurrency",
+        "coin_market_price_oldPriceUSD": "80.88534162511594$",
+        "coin_market_price_newPriceUSD": "80.98534162511594$",
+        "coin_market_priceDifference": "0.2786833411124216$",
+        "coin_cap_price_oldPriceUSD": "81.0786833411124216$",
+        "coin_cap_price_newPriceUSD": "81.0786833411124216$",
+        "coin_cup_priceDifference": "1.0786833411124216$",
+        "coin_market_volume24h": "1052082921.05$",
+        "coin_cap_volume24h": "668033706.05$"
+      },
+      {
+        "name": "Shiba Inu",
+        "symbol": "SHIB",
+        "supply": "589735030408322.8",
+        "developmentStatus": "Working product",
+        "proofType": "Proof of Work",
+        "orgStructure": "Decentralized",
+        "description": "SHIB is the new CryptoCurrency",
+        "coin_market_price_oldPriceUSD": "0.000026114606995599273$",
+        "coin_market_price_newPriceUSD": "0.000027114606995599273$",
+        "coin_market_priceDifference": "0.0000133411124216$",
+        "coin_cap_price_oldPriceUSD": "0.000026114606995599273$",
+        "coin_cap_price_newPriceUSD": "0.000027333606995599273$",
+        "coin_cup_priceDifference": "0.0000000011124216$",
+        "coin_market_volume24h": "1270417546.45$",
+        "coin_cap_volume24h": "716656028.24$"
+      }
+    ]
+  },
+  {
+    "date": "2022-02-21T09:07:10.893Z",
+    "data": [
+      {
+        "name": "Avalanche",
+        "symbol": "AVAX",
+        "supply": "395891289.9134107",
+        "coin_market_price": "80.9975335176955$",
+        "coin_cap_price": "81.0056840379986554$",
+        "coin_market_volume24h": "1052081559.19$",
+        "coin_cap_volume24h": "667157121.18$"
+      },
+      {
+        "name": "Shiba Inu",
+        "symbol": "SHIB",
+        "supply": "589735030408322.8",
+        "coin_market_price": "0.000027077726384828018$",
+        "coin_cap_price": "0.0000270200618970$",
+        "coin_market_volume24h": "1270419038.96$",
+        "coin_cap_volume24h": "715224820.91$"
+      },
+      {
+        "name": "Binance USD",
+        "symbol": "BUSD",
+        "supply": "18110422295.209255",
+        "coin_market_price": "0.9992328342096831$",
+        "coin_cap_price": "1.0015401646719965$",
+        "coin_market_volume24h": "3654685334.13$",
+        "coin_cap_volume24h": "486561953.99$"
+      },
+      {
+        "name": "Ethereum",
+        "symbol": "ETH",
+        "supply": "119669196.624",
+        "coin_market_price": "2719.8503147911947$",
+        "coin_cap_price": "2722.3667223926556202$",
+        "coin_market_volume24h": "11744657696.97$",
+        "coin_cap_volume24h": "7588075309.59$"
+      },
+      {
+        "name": "Bitcoin",
+        "symbol": "BTC",
+        "supply": "18964275",
+        "coin_market_price": "39029.98100305944$",
+        "coin_cap_price": "39061.3415863661169086$",
+        "coin_market_volume24h": "18498642939.52$",
+        "coin_cap_volume24h": "8809967725.27$"
+      },
+      {
+        "name": "Tether",
+        "symbol": "USDT",
+        "supply": "81064697052.53387",
+        "coin_market_price": "1.000478244794607$",
+        "coin_cap_price": "1.0021894803169144$",
+        "coin_market_volume24h": "45973942823.52$",
+        "coin_cap_volume24h": "23001102403.64$"
+      }
+    ]
+  },
+  {
+    "date": "2022-02-21T09:08:44.144Z",
+    "data": [
+      {
+        "name": "Avalanche",
+        "symbol": "AVAX",
+        "supply": "395891289.9134107",
+        "coin_market_price": "80.82419818470727$",
+        "coin_cap_price": "81.0488811285844079$",
+        "coin_market_volume24h": "1051229880.98$",
+        "coin_cap_volume24h": "663657307.94$"
+      },
+      {
+        "name": "Shiba Inu",
+        "symbol": "SHIB",
+        "supply": "589735030408322.8",
+        "coin_market_price": "0.000026950096709808918$",
+        "coin_cap_price": "0.0000270239148123$",
+        "coin_market_volume24h": "1267091624.59$",
+        "coin_cap_volume24h": "714879360.60$"
+      },
+      {
+        "name": "Binance USD",
+        "symbol": "BUSD",
+        "supply": "18110422295.209255",
+        "coin_market_price": "0.9995115783863378$",
+        "coin_cap_price": "1.0018707699282425$",
+        "coin_market_volume24h": "3640734650.75$",
+        "coin_cap_volume24h": "486216466.41$"
+      },
+      {
+        "name": "Ethereum",
+        "symbol": "ETH",
+        "supply": "119669196.624",
+        "coin_market_price": "2717.894023952356$",
+        "coin_cap_price": "2723.5619627430104222$",
+        "coin_market_volume24h": "11704748226.76$",
+        "coin_cap_volume24h": "7574320413.41$"
+      },
+      {
+        "name": "Bitcoin",
+        "symbol": "BTC",
+        "supply": "18964275",
+        "coin_market_price": "38989.99223702228$",
+        "coin_cap_price": "39065.6911122968315867$",
+        "coin_market_volume24h": "18414659857.43$",
+        "coin_cap_volume24h": "8789645107.10$"
+      },
+      {
+        "name": "Tether",
+        "symbol": "USDT",
+        "supply": "81064697052.53387",
+        "coin_market_price": "1.0004618589705636$",
+        "coin_cap_price": "1.0025133710733036$",
+        "coin_market_volume24h": "45827054070.91$",
+        "coin_cap_volume24h": "22973578776.38$"
+      }
+    ]
+  },
+  {
+    "date": "2022-02-21T09:08:44.144Z",
+    "data": [
+      {
+        "name": "Avalanche",
+        "symbol": "AVAX",
+        "supply": "395891289.9134107",
+        "developmentStatus": "Working product",
+        "proofType": "Proof of Work",
+        "orgStructure": "Decentralized",
+        "description": "AVAX is the new CryptoCurrency",
+        "coin_market_price": "80.82419818470727$",
+        "coin_cap_price": "81.0488811285844079$",
+        "coin_market_volume24h": "1051229880.98$",
+        "coin_cap_volume24h": "663657307.94$"
+      },
+      {
+        "name": "Shiba Inu",
+        "symbol": "SHIB",
+        "supply": "589735030408322.8",
+        "developmentStatus": "Working product",
+        "proofType": "Proof of Work",
+        "orgStructure": "Decentralized",
+        "description": "SHIB is the new CryptoCurrency",
+        "coin_market_price": "0.000026950096709808918$",
+        "coin_cap_price": "0.0000270239148123$",
+        "coin_market_volume24h": "1267091624.59$",
+        "coin_cap_volume24h": "714879360.60$"
+      },
+      {
+        "name": "Binance USD",
+        "symbol": "BUSD",
+        "supply": "18110422295.209255",
+        "developmentStatus": "Working product",
+        "proofType": "Proof of Work",
+        "orgStructure": "Decentralized",
+        "description": "Binance USD is the new CryptoCurrency",
+        "coin_market_price": "0.9995115783863378$",
+        "coin_cap_price": "1.0018707699282425$",
+        "coin_market_volume24h": "3640734650.75$",
+        "coin_cap_volume24h": "486216466.41$"
+      },
+      {
+        "name": "Ethereum",
+        "symbol": "ETH",
+        "supply": "119669196.624",
+        "developmentStatus": "Working product",
+        "proofType": "Proof of Work",
+        "orgStructure": "Decentralized",
+        "description": "ETH is the new CryptoCurrency",
+        "coin_market_price": "2717.894023952356$",
+        "coin_cap_price": "2723.5619627430104222$",
+        "coin_market_volume24h": "11704748226.76$",
+        "coin_cap_volume24h": "7574320413.41$"
+      }
+    ]
+  }
+]

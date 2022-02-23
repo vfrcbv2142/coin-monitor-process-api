@@ -1,0 +1,26 @@
+{
+  "numberOfCryptoCurrencies": 6,
+  "documentLifetime": "0 days, 14 hours, 33 minutes, 52 seconds",
+  "cryptoCurrenciesNames": [
+    "Avalanche",
+    "Shiba Inu",
+    "Binance USD",
+    "Ethereum",
+    "Bitcoin",
+    "Tether"
+  ],
+  "theMostExpenciveCoin(coin-market)": "Bitcoin",
+  "theMostExpenciveCoin(coin-cap)": "Bitcoin",
+  "theMostExpenciveCoin(coin-market)Price": "39029.98100305944$",
+  "theMostExpenciveCoin(coin-cap)Price": "39061.3415863661169086$",
+  "priceDifferenceBetweenSourses": "31.3605833 $",
+  "theCheapestCoin(coin-market)": "Shiba Inu",
+  "theCheapestCoin(coin-cap)": "Shiba Inu",
+  "theCheapestCoin(coin-market)Price": "0.000027077726384828018$",
+  "theCheapestCoin(coin-cap)Price": "0.0000270200618970$",
+  "priceDifferenceBetweenSourses": "5.7664487$",
+  "avgAllCoinsPrices(coin-market)": "6972.13809$",
+  "avgAllCoinsPrices(coin-cap)": "6977.78629$",
+  "avgOverallPricesDifference": "5.64819$",
+  "moreExpenciveByPricesWebService": "Coin-CAP"
+}

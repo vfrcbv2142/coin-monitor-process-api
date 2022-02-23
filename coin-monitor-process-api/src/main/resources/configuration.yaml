@@ -1,0 +1,9 @@
+readCoin:
+  wsdl: "http://coin-storage-system-api.us-e2.cloudhub.io/CoinStorageService?wsdl"
+  service: "CoinStorageService"
+  port: "CoinStorageServiceSOAP"
+  address: "http://coin-storage-system-api.us-e2.cloudhub.io/CoinStorageService"
+  operation: "readCoin"
+  
+vm:
+  queueName: "results"

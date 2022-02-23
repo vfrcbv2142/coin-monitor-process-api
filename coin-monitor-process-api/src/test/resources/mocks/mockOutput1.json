@@ -1,0 +1,26 @@
+{
+  "numberOfCryptoCurrencies": 5,
+  "documentLifetime": "3 days, 19 hours, 52 minutes, 33 seconds",
+  "cryptoCurrenciesNames": [
+    "Avalanche",
+    "Binance USD",
+    "Bitcoin",
+    "Ethereum",
+    "Tether"
+  ],
+  "theMostExpenciveCoin(coin-market)": "Bitcoin",
+  "theMostExpenciveCoin(coin-cap)": "Bitcoin",
+  "theMostExpenciveCoin(coin-market)Price": "41208.744512587$",
+  "theMostExpenciveCoin(coin-cap)Price": "41239.5340835239135998$",
+  "priceDifferenceBetweenSourses": "30.7895709 $",
+  "theCheapestCoin(coin-market)": "Tether",
+  "theCheapestCoin(coin-cap)": "Binance USD",
+  "theCheapestCoin(coin-market)Price": "1.0004796854170186$",
+  "theCheapestCoin(coin-cap)Price": "1.0013918800668469$",
+  "priceDifferenceBetweenSourses": "0.0009121$",
+  "avgAllCoinsPrices(coin-market)": "8843.30690$",
+  "avgAllCoinsPrices(coin-cap)": "8849.50827$",
+  "avgOverallPricesDifference": "6.20136$",
+  "moreExpenciveByPricesWebService": "Coin-CAP",
+  "theMostExpenciveCoinDescription": "Bitcoin is a cryptocurrency and worldwide payment system. It is the first decentralized digital currency, as the system works without a central bank or single administrator."
+}

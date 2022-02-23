@@ -1,0 +1,88 @@
+{
+    "key": "620e9db6515c5a0be4a5a616",
+    "hashCode": -1002182777,
+    "date": {
+      "date": "2022-02-17T19:10:46.475Z"
+    },
+    "time": "PT116H39M22.483S",
+    "timeDifference": "4 days, 20 hours, 39 minutes, 41 seconds",
+    "data": [
+      {
+        "name": "Avalanche",
+        "symbol": "AVAX",
+        "supply": 395891289.9134107,
+        "description": "Avalanche is an open-source platform for launching decentralized finance applications and enterprise blockchain deployments in one interoperable, highly scalable ecosystem. Developers who build on Avalanche can easily create powerful, reliable, and secure applications and custom blockchain networks with complex rulesets or build on existing private or public subnets. Avalanche gives you complete control on both the network and application layers–helping you build anything you can imagine.",
+        "dStatus": "Working product",
+        "proofT": "Proof of Stake",
+        "orgStr": "Semi-centralized",
+        "cmPrice": 88.70052787449873,
+        "ccPrice": 88.6382959544222286,
+        "cmVolume24h": 1798528090.95,
+        "ccVolume24h": 1084164553.31
+      },
+      {
+        "name": "Binance USD",
+        "symbol": "BUSD",
+        "supply": 17795128019.589256,
+        "dStatus": "Only token",
+        "proofT": "Not mineable",
+        "orgStr": "Centralized",
+        "cmPrice": 1.00069458092266,
+        "ccPrice": 1.0013918800668469,
+        "cmVolume24h": 4488921986.88,
+        "ccVolume24h": 561785247.99
+      },
+      {
+        "name": "Bitcoin",
+        "symbol": "BTC",
+        "supply": 18961218,
+        "description": "Bitcoin is a cryptocurrency and worldwide payment system. It is the first decentralized digital currency, as the system works without a central bank or single administrator.",
+        "dStatus": "Working product",
+        "proofT": "Proof of Work",
+        "orgStr": "Decentralized",
+        "cmPrice": 41208.744512587,
+        "ccPrice": 41239.5340835239135998,
+        "cmVolume24h": 24152026941.72,
+        "ccVolume24h": 12689326624.26
+      },
+      {
+        "name": "Ethereum",
+        "symbol": "ETH",
+        "supply": 119620668.874,
+        "description": "Ethereum is a decentralized platform for applications. Applications build on it can use smart contracts - computer algorithms which execute themselves when data is supplied to the platform. There is no need for any human operators.",
+        "dStatus": "Working product",
+        "proofT": "Ethereum consensus (currently proof of work, will be proof of stake later on)",
+        "orgStr": "Semi-centralized",
+        "cmPrice": 2917.0883351049783,
+        "ccPrice": 2917.3655958093866632,
+        "cmVolume24h": 16449755008.57,
+        "ccVolume24h": 11130254127.90
+      },
+      {
+        "name": "Shiba Inu",
+        "symbol": "SHIB",
+        "supply": 589735030408322.8,
+        "description": "SHIB is an experiment in decentralized spontaneous community building. SHIB token is our first token and allows users to hold Billions or even Trillions of them.  Nicknamed the DOGECOIN KILLER, this ERC-20 ONLY token can remain well under a penny and still outpace Dogecoin in a small amount of time (relatively speaking). Popular worldwide, and already up thousands of percent, Shiba token ($Shib) is the first cryptocurrency token to be listed and incentivized on ShibaSwap, our decentralized exchange.",
+        "dStatus": "No info",
+        "proofT": "Not mineable",
+        "orgStr": "No info",
+        "cmPrice": 0.000029124047448247626,
+        "ccPrice": 0.0000291275987133,
+        "cmVolume24h": 1994538950.99,
+        "ccVolume24h": 1080069092.18
+      },
+      {
+        "name": "Tether",
+        "symbol": "USDT",
+        "supply": 81064697052.54242,
+        "description": "Tether (USDT) is a cryptocurrency with reference to fiat currencies that is issued by Tether Limited Company.\nUsing the technology of Blockchain, Tether allows the users to keep, send and receive digital tokens pegged to dollars, euros and yens*.\n\n*1USDT =/= 1USD - according to ToS (Terms-of-service) of Tether Limited Company - Tether tokens are not money, although they are backed by the currency used to purchase them at issuance.",
+        "dStatus": "Working product",
+        "proofT": "Not mineable",
+        "orgStr": "Centralized",
+        "cmPrice": 1.0004796854170186,
+        "ccPrice": 1.0020062348778257,
+        "cmVolume24h": 56798523168.18,
+        "ccVolume24h": 30959530234.34
+      }
+    ]
+ }

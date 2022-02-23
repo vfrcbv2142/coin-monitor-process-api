@@ -1,0 +1,16 @@
+<body>
+     <createCoin>
+         <date>test</date>
+         <data>
+            <coin>
+               <name>test</name>
+               <symbol>test</symbol>
+               <supply>test</supply>
+               <coin_market_price>test</coin_market_price>
+               <coin_cap_price>test</coin_cap_price>
+               <coin_market_volume24h>test</coin_market_volume24h>
+               <coin_cap_volume24h>test</coin_cap_volume24h>
+            </coin>
+         </data>
+      </createCoin>
+   </body>

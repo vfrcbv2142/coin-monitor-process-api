@@ -1,0 +1,31 @@
+{
+    "key": "620e892fed1d84fe31486ae4",
+    "hashCodeCalculated": 2138840170,
+    "hashCodeFromOObjectStore": 7455321436,
+    "equalHashCodes": false,
+    "document": {
+	  "data": [
+      {
+        "name": "Avalanche",
+        "coin_market_volume24h": "1051229880.98 $",
+        "coin_cap_volume24h": "663657307.94 $"
+      },
+      {
+        "name": "Shiba Inu",
+        "symbol": "SHIB",
+        "coin_market_volume24h": "1267091624.59 $",
+        "coin_cap_volume24h": "714879360.60 $"
+      },
+      {
+        "name": "Binance USD",
+        "coin_cap_volume24h": "486216466.41 $"
+      },
+      {
+        "name": "Ethereum",
+        "symbol": "ETH",
+        "coin_market_volume24h": "11704748226.76 $",
+        "coin_cap_volume24h": "7574320413.41 $"
+      }
+    ]
+  }
+}
